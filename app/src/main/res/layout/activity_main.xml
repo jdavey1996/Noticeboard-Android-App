@@ -25,7 +25,7 @@
             android:background="#5d5d5d"
             android:padding="10dp"
             android:textSize="20sp"
-            android:id="@+id/LoginInput1"
+            android:id="@+id/loginInput1"
             android:hint="Username"
             />
 
@@ -39,8 +39,8 @@
             android:background="#5d5d5d"
             android:padding="10dp"
             android:layout_marginTop="5dp"
-            android:id="@+id/LoginInput2"
-            android:hint="Password"/>
+            android:hint="Password"
+            android:id="@+id/loginInput2" />
 
         <Button
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
             android:textSize="20sp"
             android:padding="10dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/submitBtn"
+            android:id="@+id/submitLoginBtn"
             android:text="Login"
             android:nestedScrollingEnabled="true" />
         <Button
@@ -63,7 +63,7 @@
             android:textSize="20sp"
             android:padding="10dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/registerBtn"
+            android:id="@+id/regActivityBtn"
             android:text="Register"
             android:nestedScrollingEnabled="true" />
     </LinearLayout>
