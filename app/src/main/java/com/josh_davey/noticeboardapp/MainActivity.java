@@ -12,16 +12,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
-        Button register;
-
-        register = (Button)findViewById(R.id.regActivityBtn);
-        register.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent startRegister = new Intent(MainActivity.this, Register.class);
-                startActivity(startRegister);
-                finish();
-            }
-        });
+    //Method to open the register activity.
+    public void startRegister(View view)
+    {
+        startActivity(new Intent(this,Register.class));
     }
 }

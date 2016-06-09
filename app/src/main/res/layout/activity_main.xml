@@ -3,72 +3,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#282828"
+    android:orientation="vertical"
     android:padding="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
         android:orientation="vertical"
-        android:layout_centerVertical="false"
-        android:padding="10dp"
-        android:layout_marginTop="80dp">
+        android:padding="10dp">
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textColorHint="#ffffff"
-            android:background="#5d5d5d"
-            android:padding="10dp"
-            android:textSize="20sp"
             android:id="@+id/loginInput1"
-            android:hint="Username"
-            />
-
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:background="#5d5d5d"
+            android:hint="Username"
+            android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
-            android:textStyle="bold"
-            android:background="#5d5d5d"
-            android:padding="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/loginInput2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:background="#5d5d5d"
             android:hint="Password"
-            android:id="@+id/loginInput2" />
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#e95a44"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:padding="10dp"
-            android:layout_marginTop="10dp"
             android:id="@+id/submitLoginBtn"
-            android:text="Login"
-            android:nestedScrollingEnabled="true" />
-        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#e95a44"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:padding="10dp"
             android:layout_marginTop="10dp"
+            android:background="#e95a44"
+            android:padding="10dp"
+            android:text="Login"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
             android:id="@+id/regActivityBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#e95a44"
+            android:onClick="startRegister"
+            android:padding="10dp"
             android:text="Register"
-            android:nestedScrollingEnabled="true" />
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
-
-
 
 
 </RelativeLayout>
