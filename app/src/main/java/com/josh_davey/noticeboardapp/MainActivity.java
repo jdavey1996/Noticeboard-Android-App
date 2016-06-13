@@ -5,13 +5,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText textbox1, textbox2;
+    String Input1, Input2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textbox1 = (EditText) findViewById(R.id.loginInput1);
+        textbox2 = (EditText) findViewById(R.id.loginInput2);
+
     }
 
     //Method to open the register activity.
@@ -19,4 +28,15 @@ public class MainActivity extends AppCompatActivity {
     {
         startActivity(new Intent(this,Register.class));
     }
+
+    public void login(View view) {
+        Input1 = textbox1.getText().toString();
+        Input2 = textbox2.getText().toString();
+        MySQLCommunication login = new MySQLCommunication(this);
+        login.execute("login",Input1,Input2);
+
+        //MySQLCommunication login = new MySQLCommunication(this);
+        //login.execute(Input1, Input2);
+    }
 }
+

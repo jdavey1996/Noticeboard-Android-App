@@ -33,6 +33,6 @@ public class Register extends Activity {
         Input1 = textbox1.getText().toString();
         Input2 = textbox2.getText().toString();
         MySQLCommunication register = new MySQLCommunication(this);
-        register.execute(Input1, Input2);
+        register.execute("register",Input1,Input2);
     }
 }

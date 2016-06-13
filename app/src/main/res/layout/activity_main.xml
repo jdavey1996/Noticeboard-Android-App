@@ -50,7 +50,8 @@
             android:text="Login"
             android:textColor="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:onClick="login" />
 
         <Button
             android:id="@+id/regActivityBtn"
