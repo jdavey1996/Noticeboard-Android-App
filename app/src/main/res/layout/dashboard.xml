@@ -29,10 +29,11 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/user"
+        android:textColor="#ffffff"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
-        android:textColor="#ffffff"/>
+        android:layout_marginTop="52dp"
+        android:textStyle="bold"/>
 
 
 </RelativeLayout>

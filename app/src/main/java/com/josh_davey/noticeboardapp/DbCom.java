@@ -1,6 +1,8 @@
 package com.josh_davey.noticeboardapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,16 +14,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import javax.net.ssl.HttpsURLConnection;
-
-public class MySQLCommunication extends AsyncTask<String, Void, String> {
+public class DbCom extends AsyncTask<String, Void, DbComResults> {
     //Tag for this class, used for logcat.
-    private static final String TAG = "MySQLCommunication";
+    private static final String TAG = "DbCom";
+
+
 
     //Constuctor method to get the context from other methods.
     Context ctx;
 
-    public MySQLCommunication(Context ctx) {
+    public DbCom(Context ctx) {
         this.ctx = ctx;
     }
 
@@ -31,7 +33,7 @@ public class MySQLCommunication extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected DbComResults doInBackground(String... params) {
         //Assigns string variables to the parameters that will be passed to this method (Variables containing user inputs).
         String selector = params[0];
         String item1 = params[1];
@@ -66,7 +68,11 @@ public class MySQLCommunication extends AsyncTask<String, Void, String> {
                     IS.close();
 
                     //If the background acitivty completes without error, returns a string to use when relaying the status to the user.
-                    return "Posted to database";
+                    DbComResults returnRegValues = new DbComResults();
+                    returnRegValues.toastResult = "Posted to database";
+                    returnRegValues.selectorResult = "register";
+                    return returnRegValues;
+
                 } catch (Exception e) {
                     //Catches exceptions and displays them in the Logcat.
                     Log.e(TAG, "Exception:", e);
@@ -76,10 +82,15 @@ public class MySQLCommunication extends AsyncTask<String, Void, String> {
             case "login":
                 try
                 {
-                    return "Username: " + item1 + "\nPassword: " +item2;
+                    DbComResults returnLoginValues = new DbComResults();
+                    returnLoginValues.toastResult = "Username: " + item1 + "\nPassword: " +item2;
+                    returnLoginValues.selectorResult = "login";
+                    returnLoginValues.loggedInUser = item1;
+                    return returnLoginValues;
                 }
                 catch (Exception e)
                 {
+                    //Pass variable to tell
                     Log.e(TAG, "Exception:", e);
                 }
             break;
@@ -88,17 +99,35 @@ public class MySQLCommunication extends AsyncTask<String, Void, String> {
         return null;
 }
 
-
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+    protected void onPostExecute(DbComResults result) {
+        switch (result.selectorResult)
+        {
+            case "register":
+                Intent i = new Intent (ctx, MainActivity.class);
+                ctx.startActivity(i);
+                ((Activity)ctx).finish();
+
+                Toast.makeText(ctx,result.toastResult, Toast.LENGTH_LONG).show();
+                break;
+
+            case "login":
+                Intent j = new Intent (ctx, Dashboard.class);
+                j.putExtra("Username", result.loggedInUser);
+                ctx.startActivity(j);
+                ((Activity)ctx).finish();
+
+                Toast.makeText(ctx,result.toastResult, Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 }
+
 
 
 

@@ -18,9 +18,13 @@
 
         <activity android:name=".Register">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.OTHER" />
+            </intent-filter>
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name=".Dashboard">
+            <intent-filter>
+                <action android:name="android.intent.action.OTHER" />
             </intent-filter>
         </activity>
     </application>

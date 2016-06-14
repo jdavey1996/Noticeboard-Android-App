@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,11 +30,8 @@ public class MainActivity extends AppCompatActivity {
     public void login(View view) {
         Input1 = textbox1.getText().toString();
         Input2 = textbox2.getText().toString();
-        MySQLCommunication login = new MySQLCommunication(this);
+        DbCom login = new DbCom(this);
         login.execute("login",Input1,Input2);
-
-        //MySQLCommunication login = new MySQLCommunication(this);
-        //login.execute(Input1, Input2);
     }
 }
 
