@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -63,14 +67,25 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     //Closes the stream. All data has been sent to the connected URL.
                     stream.close();
 
-                    //Get response from the server. ADD READING AND DISPLAYING RESPONSE IN THE LOG.
+                    //Gets response from the server. Reads inputstream and builds a string respponse
                     InputStream IS = con.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(IS));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    //Makes string variable equal to response from server
+                    String responseText = response.toString();
+                    reader.close();
                     IS.close();
 
-                    //If the background acitivty completes without error, returns a string to use when relaying the status to the user.
+
+
+                    //Uses DbComResults constructor to return multiple strings (the selector and server response)
                     DbComResults returnRegValues = new DbComResults();
-                    returnRegValues.toastResult = "Posted to database";
                     returnRegValues.selectorResult = "register";
+                    returnRegValues.serverResponse = responseText;
                     return returnRegValues;
 
                 } catch (Exception e) {
@@ -83,7 +98,6 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                 try
                 {
                     DbComResults returnLoginValues = new DbComResults();
-                    returnLoginValues.toastResult = "Username: " + item1 + "\nPassword: " +item2;
                     returnLoginValues.selectorResult = "login";
                     returnLoginValues.loggedInUser = item1;
                     return returnLoginValues;
@@ -109,11 +123,17 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
         switch (result.selectorResult)
         {
             case "register":
-                Intent i = new Intent (ctx, MainActivity.class);
-                ctx.startActivity(i);
-                ((Activity)ctx).finish();
+                if (result.serverResponse.equals("success"))
+                {
+                    Intent i = new Intent (ctx, MainActivity.class);
+                    ctx.startActivity(i);
+                    ((Activity)ctx).finish();
 
-                Toast.makeText(ctx,result.toastResult, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Success!", Toast.LENGTH_LONG).show();
+
+                }
+
+
                 break;
 
             case "login":
@@ -122,7 +142,6 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                 ctx.startActivity(j);
                 ((Activity)ctx).finish();
 
-                Toast.makeText(ctx,result.toastResult, Toast.LENGTH_LONG).show();
                 break;
         }
     }
