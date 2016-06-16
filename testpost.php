@@ -12,11 +12,13 @@ $value2   = urldecode($_POST['field2']);
 $sql = "INSERT INTO tblData(datainput1, datainput2) VALUES ('$value1','$value2')";
 
   if(mysqli_query($con,$sql)){
-    echo 'success';
+     $response["message"] = "success";
+     $response["test"] = "test";
   }
   else{
-    echo 'failure';
+    $response["message"] = "failure";
   }
+  echo json_encode($response);	
   mysqli_close($con);
 
 ?>

@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -72,20 +74,21 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(IS));
                     StringBuilder response = new StringBuilder();
                     String line;
-                    while ((line = reader.readLine()) != null) {
+                    while ((line = reader.readLine()) != null)
                         response.append(line);
-                    }
-                    //Makes string variable equal to response from server
-                    String responseText = response.toString();
+
                     reader.close();
                     IS.close();
 
+                    JSONObject jsonReturn = new JSONObject(response.toString());
+
+                    Log.i(TAG, jsonReturn.getString("test"));
 
 
                     //Uses DbComResults constructor to return multiple strings (the selector and server response)
                     DbComResults returnRegValues = new DbComResults();
                     returnRegValues.selectorResult = "register";
-                    returnRegValues.serverResponse = responseText;
+                    returnRegValues.serverResponse = jsonReturn.getString("message");
                     return returnRegValues;
 
                 } catch (Exception e) {
@@ -132,7 +135,6 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     Toast.makeText(ctx, "Success!", Toast.LENGTH_LONG).show();
 
                 }
-
 
                 break;
 
