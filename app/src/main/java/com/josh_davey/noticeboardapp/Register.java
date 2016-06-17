@@ -17,6 +17,7 @@ public class Register extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
+        //Sets the EditText variables equal to corresponding text inputs on the xml sheet.
         textbox1 = (EditText) findViewById(R.id.regInput1);
         textbox2 = (EditText) findViewById(R.id.regInput2);
     }
@@ -26,6 +27,8 @@ public class Register extends Activity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
+    /*Method to execute registering, using the class DbCom. This accepts requires username and password entered by the user, converted to a string, and
+    passed through to be used in the register case of the doInBackground method in class DbCom*/
     public void register(View view) {
         Input1 = textbox1.getText().toString();
         Input2 = textbox2.getText().toString();
