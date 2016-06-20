@@ -3,8 +3,11 @@ package com.josh_davey.noticeboardapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.Toast;
 
 
 public class Register extends Activity {
@@ -32,7 +35,23 @@ public class Register extends Activity {
     public void register(View view) {
         Input1 = textbox1.getText().toString();
         Input2 = textbox2.getText().toString();
-        DbCom register = new DbCom(this);
-        register.execute("register",Input1,Input2);
+
+        if ((!Input1.matches("^[a-zA-Z0-9]*$")) || (!Input2.matches("^[a-zA-Z0-9]*$")))
+        {
+            Toast.makeText(Register.this, "Inputs can only contain numbers and letters.", Toast.LENGTH_SHORT).show();
+        }
+        else if ((Input1.isEmpty()) || (Input2.isEmpty()))
+        {
+            Toast.makeText(Register.this, "Inputs cannot be left empty.", Toast.LENGTH_SHORT).show();
+        }
+        else if ((Input1.length() < 7) || (Input2.length() < 7))
+        {
+            Toast.makeText(Register.this, "Inputs cannot be less than 7 characters in length.", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            DbCom register = new DbCom(this);
+            register.execute("register",Input1,Input2);
+        }
     }
 }
