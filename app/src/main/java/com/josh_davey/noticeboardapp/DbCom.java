@@ -52,25 +52,24 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     con.setDoOutput(true);
 
                     //Creates the output stream and buffered writer to write the string data to and send to the server.
-                    OutputStream stream = con.getOutputStream();
-                    BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8"));
+                    OutputStream oStream = con.getOutputStream();
+                    BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(oStream, "UTF-8"));
 
-                    //Creates the string of encoded data to post to a PHP script, to allow it to be posted to a hosted MySQL database.
-                    //field1, field2 match variables specified in the PHP script so the user inputs can be passed to the server.
-                    String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8")
-                            + "&" +
-                            URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(pass, "UTF-8");
+                    //Creates a json object and stores data within it ready to be sent.
+                    JSONObject regData = new JSONObject();
+                    regData.put("username", user);
+                    regData.put("password", pass);
 
-                    //Writes data to the buffer ready to be sent.
-                    buffer.write(data);
+                    //Converts data to string and writes it to the buffer ready to be sent.
+                    buffer.write(regData.toString());
                     //Closes the buffer. Also automatically runs the .flush() method which sends the data.
                     buffer.close();
                     //Closes the stream. All data has been sent to the connected URL.
-                    stream.close();
+                    oStream.close();
 
                     //Gets response from the server. Reads inputstream and builds a string respponse.
-                    InputStream IS = con.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(IS));
+                    InputStream iStream = con.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
                     StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null)
@@ -78,7 +77,7 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
 
                     //Closes reader and inputstream.
                     reader.close();
-                    IS.close();
+                    iStream.close();
 
                     //Creates a json object and adds the string response from the server to it.
                     JSONObject jsonRegReturn = new JSONObject(response.toString());

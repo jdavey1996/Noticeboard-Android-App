@@ -6,8 +6,9 @@ define("DB_DATABASE", "DB_DashboardApp");
 
 $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 
-$username  = urldecode($_POST['username']);
-$password   = urldecode($_POST['password']);
+$data = json_decode(file_get_contents('php://input'));
+$username = $data->{"username"};
+$password = $data->{"password"};
 
 if(!$con){
     $response["message"] = "conErr";
