@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:id="@+id/linearLayout">
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -27,32 +27,39 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+
         <EditText
-            android:id="@+id/regInput1"
+            android:id="@+id/regUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="#5d5d5d"
-            android:hint="Input1"
+            android:hint="Username"
+            android:singleLine="true"
+            android:maxLength="12"
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal" />
 
         <EditText
-            android:id="@+id/regInput2"
+            android:id="@+id/regPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:layout_marginTop="10dp"
             android:background="#5d5d5d"
-            android:hint="Input2"
+            android:hint="Password"
+            android:singleLine="true"
+            android:maxLength="12"
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:id="@+id/submitRegBtn"

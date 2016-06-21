@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -39,14 +38,14 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
     protected DbComResults doInBackground(String... params) {
         //Assigns string variables to the parameters that will be passed to this method (Variables containing user inputs).
         String selector = params[0];
-        String item1 = params[1];
-        String item2 = params[2];
+        String user = params[1];
+        String pass = params[2];
 
         switch (selector) {
             case "register":
                 try {
                     //Sets the URL of the PHP script that receives data from this AsyncTaskand posts it to a MySQL database.
-                    URL url = new URL("http://josh-davey.com/androidapp/testpost.php");
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_registration.php");
                     //Sets the connection.
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setRequestMethod("POST");
@@ -58,9 +57,9 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
 
                     //Creates the string of encoded data to post to a PHP script, to allow it to be posted to a hosted MySQL database.
                     //field1, field2 match variables specified in the PHP script so the user inputs can be passed to the server.
-                    String data = URLEncoder.encode("field1", "UTF-8") + "=" + URLEncoder.encode(item1, "UTF-8")
+                    String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(user, "UTF-8")
                             + "&" +
-                            URLEncoder.encode("field2", "UTF-8") + "=" + URLEncoder.encode(item2, "UTF-8");
+                            URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(pass, "UTF-8");
 
                     //Writes data to the buffer ready to be sent.
                     buffer.write(data);
@@ -91,7 +90,7 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     returnRegValues.serverResponse = jsonRegReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "Register server response: "+returnRegValues.serverResponse);
+                    Log.i(TAG, "RegisterActivity server response: "+returnRegValues.serverResponse);
 
                     //Return values object to the onPostExecute method.
                     return returnRegValues;
@@ -107,7 +106,7 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                 {
                     DbComResults returnLoginValues = new DbComResults();
                     returnLoginValues.selectorResult = "login";
-                    returnLoginValues.loggedInUser = item1;
+                    returnLoginValues.loggedInUser = user;
                     return returnLoginValues;
                 }
                 catch (Exception e)
@@ -132,11 +131,11 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
         {
             case "register":
                 //Covers all outcomes of server responses and details actions to take based on each. (Creating toasts to tell users outcomes).
-                //Successful posting to database, username already existing, failure posting to database, and connection to database error.
+                //Successful posting to database, txtUsername already existing, failure posting to database, and connection to database error.
                 if (result.serverResponse.equals("success"))
                 {
                     //This returns the user to the login screen on success and displays a toast saying successfully registered.
-                    Intent i = new Intent (ctx, MainActivity.class);
+                    Intent i = new Intent (ctx, LoginActivity.class);
                     ctx.startActivity(i);
                     ((Activity)ctx).finish();
                     Toast.makeText(ctx, "Successfully registered!", Toast.LENGTH_LONG).show();
@@ -156,8 +155,8 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                 break;
 
             case "login":
-                Intent j = new Intent (ctx, Dashboard.class);
-                j.putExtra("Username", result.loggedInUser);
+                Intent j = new Intent (ctx, DashboardActivity.class);
+                j.putExtra("LoggedInUser", result.loggedInUser);
                 ctx.startActivity(j);
                 ((Activity)ctx).finish();
 

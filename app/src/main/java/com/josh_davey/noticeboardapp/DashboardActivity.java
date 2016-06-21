@@ -5,20 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-public class Dashboard extends Activity {
+public class DashboardActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);
+        setContentView(R.layout.activity_dashboard);
 
         TextView texttt;
         texttt = (TextView)findViewById(R.id.user);
 
 
         Intent intent = getIntent();
-        String user = intent.getExtras().getString("Username");
+        String user = intent.getExtras().getString("LoggedInUser");
 
         texttt.setText(user);
 

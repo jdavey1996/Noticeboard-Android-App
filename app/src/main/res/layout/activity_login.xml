@@ -15,12 +15,14 @@
         android:padding="10dp">
 
         <EditText
-            android:id="@+id/loginInput1"
+            android:id="@+id/loginUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="#5d5d5d"
             android:hint="Username"
+            android:singleLine="true"
+            android:maxLength="12"
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
@@ -28,12 +30,15 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/loginInput2"
+            android:id="@+id/loginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:inputType="textPassword"
             android:background="#5d5d5d"
             android:hint="Password"
+            android:singleLine="true"
+            android:maxLength="12"
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
