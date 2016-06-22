@@ -34,6 +34,49 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
         super.onPreExecute();
     }
 
+    //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
+    protected String connection(URL url, JSONObject data)
+    {
+        try {
+            //Sets the connection.
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+
+            //Creates the output stream and buffered writer to write the string data to and send to the server.
+            OutputStream oStream = con.getOutputStream();
+            BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(oStream, "UTF-8"));
+
+            //Converts data to string and writes it to the buffer ready to be sent.
+            buffer.write(data.toString());
+            //Closes the buffer. Also automatically runs the .flush() method which sends the data.
+            buffer.close();
+            //Closes the stream. All data has been sent to the connected URL.
+            oStream.close();
+
+            //Gets response from the server. Reads inputstream and builds a string respponse.
+            InputStream iStream = con.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null)
+                response.append(line);
+
+            //Closes reader and inputstream.
+            reader.close();
+            iStream.close();
+
+            //Returns string response from the server.
+            return response.toString();
+        }
+        catch (Exception e)
+        {
+            //Catches exceptions and displays them in the Log.
+            Log.e(TAG, "Exception:", e);
+        }
+        return null;
+    }
+
     @Override
     protected DbComResults doInBackground(String... params) {
         //Assigns string variables to the parameters that will be passed to this method (Variables containing user inputs).
@@ -42,50 +85,24 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
         String pass = params[2];
 
         switch (selector) {
+
             case "register":
                 try {
-                    //Sets the URL of the PHP script that receives data from this AsyncTaskand posts it to a MySQL database.
+                    //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_registration.php");
-                    //Sets the connection.
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setDoOutput(true);
-
-                    //Creates the output stream and buffered writer to write the string data to and send to the server.
-                    OutputStream oStream = con.getOutputStream();
-                    BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(oStream, "UTF-8"));
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject regData = new JSONObject();
                     regData.put("username", user);
                     regData.put("password", pass);
 
-                    //Converts data to string and writes it to the buffer ready to be sent.
-                    buffer.write(regData.toString());
-                    //Closes the buffer. Also automatically runs the .flush() method which sends the data.
-                    buffer.close();
-                    //Closes the stream. All data has been sent to the connected URL.
-                    oStream.close();
-
-                    //Gets response from the server. Reads inputstream and builds a string respponse.
-                    InputStream iStream = con.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null)
-                        response.append(line);
-
-                    //Closes reader and inputstream.
-                    reader.close();
-                    iStream.close();
-
                     //Creates a json object and adds the string response from the server to it.
-                    JSONObject jsonRegReturn = new JSONObject(response.toString());
+                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    JSONObject jsonRegReturn = new JSONObject(connection(url,regData));
 
                     //Uses DbComResults constructor to return multiple strings (selector and server response).
                     DbComResults returnRegValues = new DbComResults();
                     returnRegValues.selectorResult = "register";
-                    //Gets the string with key "message" from the json object and returns it as server response. Taken from php file.
                     returnRegValues.serverResponse = jsonRegReturn.getString("message");
 
                     //Log server response
@@ -114,10 +131,9 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     Log.e(TAG, "Exception:", e);
                 }
             break;
-
         }
         return null;
-}
+    }
 
     @Override
     protected void onProgressUpdate(Void... values) {
@@ -152,6 +168,8 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
                 }
                 break;
+
+
 
             case "login":
                 Intent j = new Intent (ctx, DashboardActivity.class);
