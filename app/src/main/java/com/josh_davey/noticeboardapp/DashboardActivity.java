@@ -11,14 +11,14 @@ public class DashboardActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        TextView texttt;
+       /* TextView texttt;
         texttt = (TextView)findViewById(R.id.user);
 
 
         Intent intent = getIntent();
         String user = intent.getExtras().getString("LoggedInUser");
 
-        texttt.setText(user);
+        texttt.setText(user);*/
 
     }
 

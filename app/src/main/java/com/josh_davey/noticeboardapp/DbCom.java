@@ -108,9 +108,7 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     //Log server response
                     Log.i(TAG, "RegisterActivity server response: "+returnRegValues.serverResponse);
 
-                    //Return values object to the onPostExecute method.
                     return returnRegValues;
-
                 } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
@@ -120,9 +118,26 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
             case "login":
                 try
                 {
+                    //Sets the URL of the PHP script that receives data from this AsyncTask.
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_login.php");
+
+                    //Creates a json object and stores data within it ready to be sent.
+                    JSONObject loginData = new JSONObject();
+                    loginData.put("username", user);
+                    loginData.put("password", pass);
+
+                    //Creates a json object and adds the string response from the server to it.
+                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    JSONObject jsonLoginReturn = new JSONObject(connection(url,loginData));
+
+                    //Uses DbComResults constructor to return multiple strings (selector and server response).
                     DbComResults returnLoginValues = new DbComResults();
                     returnLoginValues.selectorResult = "login";
-                    returnLoginValues.loggedInUser = user;
+                    returnLoginValues.serverResponse = jsonLoginReturn.getString("message");
+
+                    //Log server response
+                    Log.i(TAG, "LoginActivity server response: "+returnLoginValues.serverResponse);
+
                     return returnLoginValues;
                 }
                 catch (Exception e)
@@ -172,10 +187,19 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
 
 
             case "login":
-                Intent j = new Intent (ctx, DashboardActivity.class);
+               /* Intent j = new Intent (ctx, DashboardActivity.class);
                 j.putExtra("LoggedInUser", result.loggedInUser);
                 ctx.startActivity(j);
-                ((Activity)ctx).finish();
+                ((Activity)ctx).finish();*/
+
+                if (result.serverResponse.equals("exists"))
+                {
+                    Toast.makeText(ctx, "User exists", Toast.LENGTH_LONG).show();
+                }
+                else if (result.serverResponse.equals("notexists"))
+                {
+                    Toast.makeText(ctx, "User doesn't exist", Toast.LENGTH_LONG).show();
+                }
 
                 break;
         }
