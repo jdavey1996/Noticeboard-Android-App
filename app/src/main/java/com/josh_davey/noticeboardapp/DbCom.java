@@ -1,10 +1,13 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -17,9 +20,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
-public class DbCom extends AsyncTask<String, Void, DbComResults> {
+public class DbCom extends AsyncTask<String, String, DbComResults> {
     //Tag for this class, used for logcat.
     private static final String TAG = "DbCom";
 
@@ -29,9 +31,15 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
         this.ctx = ctx;
     }
 
+    //Creates variable for the progress bar that can be accessed by all methods within the class.
+    ProgressDialog progressDialog;
+
+    //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        progressDialog = new ProgressDialog(ctx,R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
     }
 
     //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
@@ -88,6 +96,12 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
 
             case "register":
                 try {
+                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("register");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_registration.php");
 
@@ -108,6 +122,8 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     //Log server response
                     Log.i(TAG, "RegisterActivity server response: "+returnRegValues.serverResponse);
 
+                    publishProgress("register");
+
                     return returnRegValues;
                 } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
@@ -118,6 +134,12 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
             case "login":
                 try
                 {
+                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("login");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_login.php");
 
@@ -145,18 +167,35 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
                 }
+
             break;
+
         }
         return null;
     }
 
+    //Depending on the function (login/register) executed, the correct progress dialog is set.
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
+    protected void onProgressUpdate(String... progress) {
+        super.onProgressUpdate(progress);
+
+        if (progress[0].equals("login"))
+        {
+            progressDialog.setMessage("Attempting login...");
+        }
+        else if (progress[0].equals("register"))
+        {
+            progressDialog.setMessage("Attempting to register...");
+        }
+
+        progressDialog.show();
     }
 
     @Override
     protected void onPostExecute(DbComResults result) {
+        //Once executed, the dialog is dismissed.
+        progressDialog.dismiss();
+
         switch (result.selectorResult)
         {
             case "register":
@@ -183,8 +222,6 @@ public class DbCom extends AsyncTask<String, Void, DbComResults> {
                     Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
                 }
                 break;
-
-
 
             case "login":
                /* Intent j = new Intent (ctx, DashboardActivity.class);
