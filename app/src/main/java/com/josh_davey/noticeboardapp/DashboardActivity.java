@@ -11,14 +11,16 @@ public class DashboardActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-       /* TextView texttt;
-        texttt = (TextView)findViewById(R.id.user);
+        //Defines TextView.
+        TextView displayUser;
+        displayUser = (TextView)findViewById(R.id.user);
 
-
+        //Gets the data (logged in user string) passed through the intent from the login/reg database communication class.
         Intent intent = getIntent();
         String user = intent.getExtras().getString("LoggedInUser");
 
-        texttt.setText(user);*/
+        //Sets the TextView to the logged in user, passed through the intent (that loads this activity)
+        displayUser.setText(user);
 
     }
 

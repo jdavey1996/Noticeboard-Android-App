@@ -152,9 +152,10 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonLoginReturn = new JSONObject(connection(url,loginData));
 
-                    //Uses DbComResults constructor to return multiple strings (selector and server response).
+                    //Uses DbComResults constructor to return multiple strings (selector, loggedInUser and server response).
                     DbComResults returnLoginValues = new DbComResults();
                     returnLoginValues.selectorResult = "login";
+                    returnLoginValues.loggedInUser = user;
                     returnLoginValues.serverResponse = jsonLoginReturn.getString("message");
 
                     //Log server response
@@ -229,6 +230,13 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                 if (result.serverResponse.equals("authenticated"))
                 {
                     Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
+
+                    //If the user is correctly authenticated, load the Dashboard activity and pass the logged in user to it.
+                    Intent loggedIn = new Intent (ctx, DashboardActivity.class);
+                    loggedIn.putExtra("LoggedInUser", result.loggedInUser);
+                    ctx.startActivity(loggedIn);
+                    ((Activity)ctx).finish();
+
                 }
                 else if (result.serverResponse.equals("notexists"))
                 {
