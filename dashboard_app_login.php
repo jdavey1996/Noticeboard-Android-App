@@ -14,17 +14,24 @@ if(!$con){
     $response["message"] = "conErr";
 }
 else{
-	$login = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."' AND user_password = '".$password."'");
-	if (mysqli_num_rows($login) > 0) {
+	$checkUser = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."'");
+	if (mysqli_num_rows($checkUser) > 0) {
+		$login = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."' AND user_password = '".$password."'");
+		if (mysqli_num_rows($login) > 0) {
 		
-		$response["message"] = "exists";
+			$response["message"] = "authenticated";
 
-	}
-	else
-	{
+		}
+		else
+		{
+			$response["message"] = "wrongpass";
+
+		}	
+	}	
+	else{
 		$response["message"] = "notexists";
-
 	}
+
 }
   echo json_encode($response);	
   mysqli_close($con);

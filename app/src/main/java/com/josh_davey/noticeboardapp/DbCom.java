@@ -223,21 +223,21 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                 }
                 break;
 
+            //Once the login function has been executed the server returns a response.
+            //Displays toasts if the user doesn't exist or the password is incorrect or the user is correctly authenticated.
             case "login":
-               /* Intent j = new Intent (ctx, DashboardActivity.class);
-                j.putExtra("LoggedInUser", result.loggedInUser);
-                ctx.startActivity(j);
-                ((Activity)ctx).finish();*/
-
-                if (result.serverResponse.equals("exists"))
+                if (result.serverResponse.equals("authenticated"))
                 {
-                    Toast.makeText(ctx, "User exists", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
                 }
                 else if (result.serverResponse.equals("notexists"))
                 {
-                    Toast.makeText(ctx, "User doesn't exist", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "User does not exist.", Toast.LENGTH_LONG).show();
                 }
-
+                else if (result.serverResponse.equals("wrongpass"))
+                {
+                    Toast.makeText(ctx, "Incorrect password, please try again.", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
