@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class DashboardActivity extends Activity {
+    public String user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +22,7 @@ public class DashboardActivity extends Activity {
 
         //Gets the data (logged in user string) passed through the intent from the login/reg database communication class.
         Intent intent = getIntent();
-        String user = intent.getExtras().getString("LoggedInUser");
+        user = intent.getExtras().getString("LoggedInUser");
 
         //Sets the TextView to the logged in user, passed through the intent (that loads this activity)
         displayUser.setText(user);
@@ -30,7 +31,9 @@ public class DashboardActivity extends Activity {
 
     public void addPostActivity(View view)
     {
-        startActivity(new Intent(this, AddPostActivity.class));
+        Intent addPost = new Intent(this, AddPostActivity.class);
+        addPost.putExtra("LoggedInUser", user);
+        startActivity(addPost);
     }
 
 

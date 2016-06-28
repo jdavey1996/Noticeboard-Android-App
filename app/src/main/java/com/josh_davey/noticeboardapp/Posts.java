@@ -6,14 +6,15 @@ public class Posts {
     public String postUser;
     public String postDesc;
 
-    public Posts(String postNum, String postName, String postUser, String postDesc)
+    //Set posts
+    public Posts(String postName, String postUser, String postDesc)
     {
-        this.postNum = postNum;
         this.postName = postName;
         this.postUser = postUser;
         this.postDesc = postDesc;
     }
 
+    //Get posts
     public String getPostNum() {
         return postNum;
     }

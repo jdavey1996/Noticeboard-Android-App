@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //The DbCom class is executed, using the two user input strings.
         DbCom login = new DbCom(this);
-        login.execute("login", LoginUsername, LoginPassword);
+        login.execute("login", LoginUsername, LoginPassword, null, null);
     }
 }
 

@@ -91,6 +91,8 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
         String selector = params[0];
         String user = params[1];
         String pass = params[2];
+        String title = params[3];
+        String desc = params[4];
 
         switch (selector) {
 
@@ -168,9 +170,45 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
                 }
-
             break;
 
+            case "addpost":
+                try {
+                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("posting");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
+                    //Sets the URL of the PHP script that receives data from this AsyncTask.
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_addpost.php");
+
+                    //Creates a json object and stores data within it ready to be sent.
+                    JSONObject postData = new JSONObject();
+                    postData.put("postTitle", title);
+                    postData.put("postDesc", desc);
+                    postData.put("postUser", user);
+
+                    //Creates a json object and adds the string response from the server to it.
+                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    JSONObject jsonNewPostReturn = new JSONObject(connection(url,postData));
+
+                    //Uses DbComResults constructor to return multiple strings (selector, loggedInUser and server response).
+                    DbComResults returnAddPostValues = new DbComResults();
+                    returnAddPostValues.selectorResult = "addpost";
+                    returnAddPostValues.serverResponse = jsonNewPostReturn.getString("message");
+
+                    //Log server response
+                    Log.i(TAG, "LoginActivity server response: "+returnAddPostValues.serverResponse);
+
+                    return returnAddPostValues;
+                }
+                catch (Exception e)
+                {
+                    //Catches exceptions and displays them in the Log.
+                    Log.e(TAG, "Exception:", e);
+                }
+            break;
         }
         return null;
     }
@@ -187,6 +225,10 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
         else if (progress[0].equals("register"))
         {
             progressDialog.setMessage("Attempting to register...");
+        }
+        else if (progress[0].equals("posting"))
+        {
+            progressDialog.setMessage("Adding new post...");
         }
 
         progressDialog.show();
@@ -245,6 +287,21 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                 else if (result.serverResponse.equals("wrongpass"))
                 {
                     Toast.makeText(ctx, "Incorrect password, please try again.", Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case "addpost":
+                if (result.serverResponse.equals("success"))
+                {
+                    Toast.makeText(ctx, "Posted to database.", Toast.LENGTH_LONG).show();
+                }
+                else if (result.serverResponse.equals("failure"))
+                {
+                    Toast.makeText(ctx, "Unexpected failure posting to database.", Toast.LENGTH_LONG).show();
+                }
+                else if (result.serverResponse.equals("conErr"))
+                {
+                    Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
                 }
                 break;
         }

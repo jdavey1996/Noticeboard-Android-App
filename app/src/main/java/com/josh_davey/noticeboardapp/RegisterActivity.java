@@ -54,7 +54,7 @@ public class RegisterActivity extends Activity {
         else
         {
             DbCom register = new DbCom(this);
-            register.execute("register", RegUsername, RegPassword);
+            register.execute("register", RegUsername, RegPassword, null, null);
         }
     }
 }
