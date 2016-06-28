@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
-
     //Class Variables.
     EditText txtLoginUsername, txtLoginPassword;
     String LoginUsername, LoginPassword;

@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 
 public class RegisterActivity extends Activity {
-
     //Class Variables.
     EditText txtRegUsername, txtRegPassword;
     String RegUsername, RegPassword;

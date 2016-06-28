@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.EditText;
 
 public class AddPostActivity extends Activity {
+    //Class Variables.
     public String user;
+    EditText txtPostTitle, txtPostDesc;
+    String PostTitle, PostDesc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +39,17 @@ public class AddPostActivity extends Activity {
 
     public void addNewPost(View view)
     {
+        //Sets the EditText variables equal to corresponding text inputs on the xml sheet.
+        txtPostTitle = (EditText) findViewById(R.id.postTitle);
+        txtPostDesc = (EditText) findViewById(R.id.postDesc);
+
+        //Converts text inputs to string and stores them in string variables.
+        PostTitle = txtPostTitle.getText().toString();
+        PostDesc = txtPostDesc.getText().toString();
+
         //The DbCom class is executed.
         DbCom addPost = new DbCom(this);
-        addPost.execute("addpost", user, null,"title1", "desc1");
+        addPost.execute("addpost", user, null, PostTitle, PostDesc);
     }
 
 }
