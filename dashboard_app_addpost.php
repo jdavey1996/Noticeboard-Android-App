@@ -11,11 +11,13 @@ $posttitle = $data->{"postTitle"};
 $postdesc = $data->{"postDesc"};
 $postuser = $data->{"postUser"};
 
+$date = new DateTime("now", new DateTimeZone('Europe/London') );
+
 if(!$con){
     $response["message"] = "conErr";
 }
 else{
-	$insertQuery = mysqli_query($con,"INSERT INTO tblPosts(post_title, post_desc, post_user) VALUES ('".$posttitle."','".$postdesc."','".$postuser."')");
+	$insertQuery = mysqli_query($con,"INSERT INTO tblPosts(post_title, post_desc, post_user, post_date) VALUES ('".$posttitle."','".$postdesc."','".$postuser."','".$date->format('Y-m-d H:i:s')."')");
 	if ($insertQuery)
 	{
 		$response["message"] = "success";
