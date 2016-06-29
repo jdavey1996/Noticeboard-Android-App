@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DashboardActivity extends Activity {
     public String user;
@@ -26,7 +28,6 @@ public class DashboardActivity extends Activity {
 
         //Sets the TextView to the logged in user, passed through the intent (that loads this activity)
         displayUser.setText(user);
-
     }
 
     public void addPostActivity(View view)
@@ -36,9 +37,11 @@ public class DashboardActivity extends Activity {
         startActivity(addPost);
     }
 
-
-
-
-
-
+    public void logoutBtn(View view)
+    {
+        Intent logout = new Intent(this, LoginActivity.class);
+        logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(logout);
+        finish();
+    }
 }
