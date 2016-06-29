@@ -24,7 +24,7 @@ public class RegisterActivity extends Activity {
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    //Method to execute registering, using the class DbCom.
+    //Method to execute registering, using the class BackgroundTasks.
     public void register(View view) {
         //Sets the EditText variables equal to corresponding text inputs on the xml sheet.
         txtRegUsername = (EditText) findViewById(R.id.regUsername);
@@ -49,10 +49,10 @@ public class RegisterActivity extends Activity {
         {
             Toast.makeText(RegisterActivity.this, "Usernames have to be a minimum of 5 characters and passwords 10 characters.", Toast.LENGTH_SHORT).show();
         }
-        //If no errors are flagged, the DbCom class is executed, using the two user input strings.
+        //If no errors are flagged, the BackgroundTasks class is executed, using the two user input strings.
         else
         {
-            DbCom register = new DbCom(this);
+            BackgroundTasks register = new BackgroundTasks(this);
             register.execute("register", RegUsername, RegPassword, null, null);
         }
     }

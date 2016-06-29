@@ -18,13 +18,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DbCom extends AsyncTask<String, String, DbComResults> {
+public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksResults> {
     //Tag for this class, used for logcat.
-    private static final String TAG = "DbCom";
+    private static final String TAG = "BackgroundTasks";
 
     //Constuctor method to get the context from classes using this AsyncTask Class.
     Context ctx;
-    public DbCom(Context ctx) {
+    public BackgroundTasks(Context ctx) {
         this.ctx = ctx;
     }
 
@@ -83,7 +83,7 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
     }
 
     @Override
-    protected DbComResults doInBackground(String... params) {
+    protected BackgroundTasksResults doInBackground(String... params) {
         //Assigns string variables to the parameters that will be passed to this method (Variables containing user inputs).
         String selector = params[0];
         String user = params[1];
@@ -113,8 +113,8 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonRegReturn = new JSONObject(connection(url,regData));
 
-                    //Uses DbComResults constructor to return multiple strings (selector and server response).
-                    DbComResults returnRegValues = new DbComResults();
+                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
+                    BackgroundTasksResults returnRegValues = new BackgroundTasksResults();
                     returnRegValues.selectorResult = "register";
                     returnRegValues.serverResponse = jsonRegReturn.getString("message");
 
@@ -151,8 +151,8 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonLoginReturn = new JSONObject(connection(url,loginData));
 
-                    //Uses DbComResults constructor to return multiple strings (selector, loggedInUser and server response).
-                    DbComResults returnLoginValues = new DbComResults();
+                    //Uses BackgroundTasksResults constructor to return multiple strings (selector, loggedInUser and server response).
+                    BackgroundTasksResults returnLoginValues = new BackgroundTasksResults();
                     returnLoginValues.selectorResult = "login";
                     returnLoginValues.loggedInUser = user;
                     returnLoginValues.serverResponse = jsonLoginReturn.getString("message");
@@ -190,8 +190,8 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonNewPostReturn = new JSONObject(connection(url,postData));
 
-                    //Uses DbComResults constructor to return multiple strings (selector and server response).
-                    DbComResults returnAddPostValues = new DbComResults();
+                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
+                    BackgroundTasksResults returnAddPostValues = new BackgroundTasksResults();
                     returnAddPostValues.selectorResult = "addpost";
                     returnAddPostValues.serverResponse = jsonNewPostReturn.getString("message");
 
@@ -226,8 +226,8 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonNewPostReturn = new JSONObject(connection(url,checkCon));
 
-                    //Uses DbComResults constructor to return multiple strings (selector and server response).
-                    DbComResults returnCheckConValues = new DbComResults();
+                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
+                    BackgroundTasksResults returnCheckConValues = new BackgroundTasksResults();
                     returnCheckConValues.selectorResult = "checkcon";
                     returnCheckConValues.serverResponse = jsonNewPostReturn.getString("message");
 
@@ -242,11 +242,43 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     Log.e(TAG, "Exception:", e);
                 }
                 break;
+
+            case "logout":
+            try
+            {
+                //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
+                publishProgress("logout");
+
+                //Log action
+                Log.i(TAG, "Logging out user");
+
+                //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                Thread.sleep(3000);
+
+                //Loads shared preferences and an editor to edit the preferences.
+                SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+
+                //Removes LoggedInUser shared preference before logging out.
+                editor.remove("LoggedInUser");
+                editor.commit();
+
+                //Uses BackgroundTasksResults constructor to return multiple strings (selector).
+                BackgroundTasksResults returnLogoutValues = new BackgroundTasksResults();
+                returnLogoutValues.selectorResult = "logout";
+
+                return returnLogoutValues;
+            }
+            catch (Exception e)
+            {
+                //Catches exceptions and displays them in the Log.
+                Log.e(TAG, "Exception:", e);
+            }
         }
         return null;
     }
 
-    //Depending on the function (login/register) executed, the correct progress dialog is set.
+    //Depending on the function executed, the correct progress dialog is set.
     @Override
     protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
@@ -267,11 +299,15 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
         {
             progressDialog.setMessage("Checking connection...");
         }
+        else if (progress[0].equals("logout"))
+        {
+            progressDialog.setMessage("Logging out...");
+        }
         progressDialog.show();
     }
 
     @Override
-    protected void onPostExecute(DbComResults result) {
+    protected void onPostExecute(BackgroundTasksResults result) {
         //Once executed, the dialog is dismissed.
         progressDialog.dismiss();
 
@@ -345,6 +381,7 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
                 }
                 break;
+
             case "checkcon":
                 if (result.serverResponse.equals("conErr"))
                 {
@@ -358,13 +395,23 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
 
                 }
-                else if (result.serverResponse.equals("connected"))
-                {
+                else if (result.serverResponse.equals("connected")) {
                     //If the connection can be established, the user is then logged in.
-                    Intent loggedIn = new Intent (ctx, DashboardActivity.class);
+                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
                     ctx.startActivity(loggedIn);
-                    ((Activity)ctx).finish();
+                    ((Activity) ctx).finish();
                 }
+                break;
+
+            case "logout":
+                //Loads the login activity after logging the user out.
+                Intent logout = new Intent(ctx, LoginActivity.class);
+                logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                ctx.startActivity(logout);
+                ((Activity) ctx).finish();
+
+                //Displays toast to say logged out.
+                Toast.makeText(ctx, "Logged out.", Toast.LENGTH_LONG).show();
                 break;
         }
     }

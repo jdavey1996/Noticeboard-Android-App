@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
     //Class Variables.
@@ -34,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             //Toast.makeText(LoginActivity.this, user, Toast.LENGTH_SHORT).show();
             //Check connection. This then loads the loggedin activity if the connection is successful.
-            DbCom checkCon = new DbCom(this);
+            BackgroundTasks checkCon = new BackgroundTasks(this);
             checkCon.execute("checkcon",null,null,null,null);
         }
     }
@@ -45,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this,RegisterActivity.class));
     }
 
-    //Method to execute logging in, using the class DbCom.
+    //Method to execute logging in, using the class BackgroundTasks.
     public void login(View view) {
         //Sets the EditText variables equal to corresponding text inputs on the xml sheet.
         txtLoginUsername = (EditText) findViewById(R.id.loginUsername);
@@ -55,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         LoginUsername = txtLoginUsername.getText().toString();
         LoginPassword = txtLoginPassword.getText().toString();
 
-        //The DbCom class is executed, using the two user input strings.
-        DbCom login = new DbCom(this);
+        //The BackgroundTasks class is executed, using the two user input strings.
+        BackgroundTasks login = new BackgroundTasks(this);
         login.execute("login", LoginUsername, LoginPassword, null, null);
     }
 }

@@ -1,17 +1,11 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DashboardActivity extends Activity {
     public String user;
@@ -45,21 +39,9 @@ public class DashboardActivity extends Activity {
 
     public void logout(View view)
     {
-        //Loads shared preferences and an editor to edit the preferences.
-        SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        //Removes LoggedInUser shared preference before logging out.
-        editor.remove("LoggedInUser");
-        editor.commit();
-
-        //Loads the login activity after logging the user out.
-        Intent logout = new Intent(this, LoginActivity.class);
-        logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(logout);
-        finish();
-
-        Toast.makeText(DashboardActivity.this, "Logged out.", Toast.LENGTH_SHORT).show();
+        //Calls and executes the logout section of the asynctask, clearing the shared preferences, logging the user out.
+        BackgroundTasks logout = new BackgroundTasks(this);
+        logout.execute("logout",null,null,null,null);
     }
 
     //Overides the method that controls the system back button. This calls the logout method.

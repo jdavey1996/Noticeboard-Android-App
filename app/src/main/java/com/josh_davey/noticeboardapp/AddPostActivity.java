@@ -47,8 +47,8 @@ public class AddPostActivity extends Activity {
         PostTitle = txtPostTitle.getText().toString();
         PostDesc = txtPostDesc.getText().toString();
 
-        //The DbCom class is executed.
-        DbCom addPost = new DbCom(this);
+        //The BackgroundTasks class is executed.
+        BackgroundTasks addPost = new BackgroundTasks(this);
         addPost.execute("addpost", user, null, PostTitle, PostDesc);
     }
 
