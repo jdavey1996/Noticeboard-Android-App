@@ -43,7 +43,7 @@ public class DashboardActivity extends Activity {
         startActivity(addPost);
     }
 
-    public void logoutBtn(View view)
+    public void logout(View view)
     {
         //Loads shared preferences and an editor to edit the preferences.
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
@@ -60,5 +60,13 @@ public class DashboardActivity extends Activity {
         finish();
 
         Toast.makeText(DashboardActivity.this, "Logged out.", Toast.LENGTH_SHORT).show();
+    }
+
+    //Overides the method that controls the system back button. This calls the logout method.
+    @Override
+    public void onBackPressed()
+    {
+        logout(null);
+        return;
     }
 }
