@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
@@ -273,9 +275,14 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                 {
                     Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
 
-                    //If the user is correctly authenticated, load the Dashboard activity and pass the logged in user to it.
+                    //Adds the logged in user string to shared preferences and commits it.
+                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("LoggedInUser", result.loggedInUser);
+                    editor.commit();
+
+                    //If the user is correctly authenticated, load the Dashboard activity.
                     Intent loggedIn = new Intent (ctx, DashboardActivity.class);
-                    loggedIn.putExtra("LoggedInUser", result.loggedInUser);
                     ctx.startActivity(loggedIn);
                     ((Activity)ctx).finish();
 

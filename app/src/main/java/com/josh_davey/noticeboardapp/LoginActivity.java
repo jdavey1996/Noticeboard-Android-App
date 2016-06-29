@@ -17,6 +17,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     //Method to open the register activity.
     public void startRegister(View view)
     {
