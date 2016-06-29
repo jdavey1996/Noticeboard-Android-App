@@ -1,19 +1,14 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.widget.Toast;
-
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -176,7 +171,7 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
 
             case "addpost":
                 try {
-                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
+                    //Sends a string "posting" to the onProgressUpdate method to display the correct progress message.
                     publishProgress("posting");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
@@ -195,13 +190,13 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     //This also runs the connection method, connecting to the server, sending the data, and returning the response.
                     JSONObject jsonNewPostReturn = new JSONObject(connection(url,postData));
 
-                    //Uses DbComResults constructor to return multiple strings (selector, loggedInUser and server response).
+                    //Uses DbComResults constructor to return multiple strings (selector and server response).
                     DbComResults returnAddPostValues = new DbComResults();
                     returnAddPostValues.selectorResult = "addpost";
                     returnAddPostValues.serverResponse = jsonNewPostReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "LoginActivity server response: "+returnAddPostValues.serverResponse);
+                    Log.i(TAG, "Add post server response: "+returnAddPostValues.serverResponse);
 
                     return returnAddPostValues;
                 }
@@ -211,6 +206,42 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                     Log.e(TAG, "Exception:", e);
                 }
             break;
+
+            case "checkcon":
+                try {
+                    //Sends a string "checkcon" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("checkcon");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
+                    //Sets the URL of the PHP script that receives data from this AsyncTask.
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_checkcon.php");
+
+                    //Creates a json object and stores temporary data within it ready to be sent.
+                    JSONObject checkCon = new JSONObject();
+                    checkCon.put("temp", "temp");
+
+                    //Creates a json object and adds the string response from the server to it.
+                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    JSONObject jsonNewPostReturn = new JSONObject(connection(url,checkCon));
+
+                    //Uses DbComResults constructor to return multiple strings (selector and server response).
+                    DbComResults returnCheckConValues = new DbComResults();
+                    returnCheckConValues.selectorResult = "checkcon";
+                    returnCheckConValues.serverResponse = jsonNewPostReturn.getString("message");
+
+                    //Log server response
+                    Log.i(TAG, "Check connection server response: "+returnCheckConValues.serverResponse);
+
+                    return returnCheckConValues;
+                }
+                catch (Exception e)
+                {
+                    //Catches exceptions and displays them in the Log.
+                    Log.e(TAG, "Exception:", e);
+                }
+                break;
         }
         return null;
     }
@@ -232,7 +263,10 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
         {
             progressDialog.setMessage("Adding new post...");
         }
-
+        else if (progress[0].equals("checkcon"))
+        {
+            progressDialog.setMessage("Checking connection...");
+        }
         progressDialog.show();
     }
 
@@ -309,6 +343,27 @@ public class DbCom extends AsyncTask<String, String, DbComResults> {
                 else if (result.serverResponse.equals("conErr"))
                 {
                     Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case "checkcon":
+                if (result.serverResponse.equals("conErr"))
+                {
+                    //If there is a conenction issue, the LoggedInUser shared preference is removed (technically logging the user out) and a toast is displayed.
+                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+
+                    editor.remove("LoggedInUser");
+                    editor.commit();
+
+                    Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
+
+                }
+                else if (result.serverResponse.equals("connected"))
+                {
+                    //If the connection can be established, the user is then logged in.
+                    Intent loggedIn = new Intent (ctx, DashboardActivity.class);
+                    ctx.startActivity(loggedIn);
+                    ((Activity)ctx).finish();
                 }
                 break;
         }

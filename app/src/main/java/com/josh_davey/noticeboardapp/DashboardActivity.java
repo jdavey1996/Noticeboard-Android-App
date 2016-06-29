@@ -14,10 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class DashboardActivity extends Activity {
-
-
     public String user;
-    TextView displayUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +49,7 @@ public class DashboardActivity extends Activity {
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        //Clears shared preferences before logging out.
+        //Removes LoggedInUser shared preference before logging out.
         editor.remove("LoggedInUser");
         editor.commit();
 
@@ -60,5 +58,7 @@ public class DashboardActivity extends Activity {
         logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(logout);
         finish();
+
+        Toast.makeText(DashboardActivity.this, "Logged out.", Toast.LENGTH_SHORT).show();
     }
 }
