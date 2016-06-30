@@ -40,7 +40,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     }
 
     //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
-    protected String connection(URL url, JSONObject data)
+    protected String connectionPost(URL url, JSONObject data)
     {
         try {
             //Sets the connection.
@@ -58,6 +58,37 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             buffer.close();
             //Closes the stream. All data has been sent to the connected URL.
             oStream.close();
+
+            //Gets response from the server. Reads inputstream and builds a string response.
+            InputStream iStream = con.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null)
+                response.append(line);
+
+            //Closes reader and inputstream.
+            reader.close();
+            iStream.close();
+
+            //Returns string response from the server.
+            return response.toString();
+        }
+        catch (Exception e)
+        {
+            //Catches exceptions and displays them in the Log.
+            Log.e(TAG, "Exception:", e);
+        }
+        return null;
+    }
+
+    //Method to establish connection and get the server response. This accepts a URL link to the PHP script.
+    protected String connectionGet(URL url)
+    {
+        try {
+            //Sets the connection.
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
 
             //Gets response from the server. Reads inputstream and builds a string response.
             InputStream iStream = con.getInputStream();
@@ -110,7 +141,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object regData, and returning the response.
-                    JSONObject jsonRegReturn = new JSONObject(connection(url,regData));
+                    JSONObject jsonRegReturn = new JSONObject(connectionPost(url,regData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnRegValues = new BackgroundTasksResults();
@@ -146,7 +177,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object loginData, and returning the response.
-                    JSONObject jsonLoginReturn = new JSONObject(connection(url,loginData));
+                    JSONObject jsonLoginReturn = new JSONObject(connectionPost(url,loginData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector, loggedInUser and server response).
                     BackgroundTasksResults returnLoginValues = new BackgroundTasksResults();
@@ -185,7 +216,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object postData, and returning the response.
-                    JSONObject jsonNewPostReturn = new JSONObject(connection(url,postData));
+                    JSONObject jsonNewPostReturn = new JSONObject(connectionPost(url,postData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnAddPostValues = new BackgroundTasksResults();
@@ -212,16 +243,12 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
                     Thread.sleep(3000);
 
-                    //Sets the URL of the PHP script that receives data from this AsyncTask.
+                    //Sets the URL of the PHP script that the app is requesting data from.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_checkcon.php");
 
-                    //Creates a json object and stores temporary data within it ready to be sent.
-                    JSONObject checkCon = new JSONObject();
-                    checkCon.put("temp", "temp");
-
                     //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending a placeholder json object, and returning the response.
-                    JSONObject jsonNewPostReturn = new JSONObject(connection(url,checkCon));
+                    //This also runs the connection method, connecting to the server and getting the response.
+                    JSONObject jsonNewPostReturn = new JSONObject(connectionGet(url));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnCheckConValues = new BackgroundTasksResults();
