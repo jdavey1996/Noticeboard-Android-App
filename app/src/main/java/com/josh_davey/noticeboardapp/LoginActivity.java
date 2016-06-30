@@ -22,17 +22,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        //Loads shared preferences and an editor to edit the preferences.
+        //Loads shared preferences.
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
         String user = pref.getString("LoggedInUser","DEFAULT") ;
 
-        /*Checks connection if the LoggedInUser preference contains an actual username. Meaning the user is still logged in.
-          If a connection is established, the user is automatically logged in*/
+        //Runs commands if there is a username still stored in the LoggedInUser shared preference.
         if ((!(user).equals("DEFAULT")))
         {
-            //Toast.makeText(LoginActivity.this, user, Toast.LENGTH_SHORT).show();
-            //Check connection. This then loads the loggedin activity if the connection is successful.
+            //Runs the checkconnection section of the async task which then logs the user in again if it succeeds.
             BackgroundTasks checkCon = new BackgroundTasks(this);
             checkCon.execute("checkcon",null,null,null,null);
         }

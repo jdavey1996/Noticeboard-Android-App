@@ -18,7 +18,7 @@ public class AddPostActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
-        //Gets the data (logged in user string) passed through the intent from the login/reg database communication class.
+        //Gets the data (logged in user string) passed through the intent from the Dashboard activity.
         Intent intent = getIntent();
         user = intent.getExtras().getString("LoggedInUser");
 
@@ -34,6 +34,7 @@ public class AddPostActivity extends Activity {
 
     public void cancelNewPost(View view)
     {
+        //Ends this activity when the cancel button is pressed.
         finish();
     }
 

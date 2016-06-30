@@ -31,10 +31,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     //Creates variable for the progress bar that can be accessed by all methods within the class.
     ProgressDialog progressDialog;
 
-    //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
         progressDialog = new ProgressDialog(ctx,R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
     }
@@ -54,12 +54,12 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
             //Converts data to string and writes it to the buffer ready to be sent.
             buffer.write(data.toString());
-            //Closes the buffer. Also automatically runs the .flush() method which sends the data.
+            //Closes the buffer. This automatically runs the .flush() method which sends the data.
             buffer.close();
             //Closes the stream. All data has been sent to the connected URL.
             oStream.close();
 
-            //Gets response from the server. Reads inputstream and builds a string respponse.
+            //Gets response from the server. Reads inputstream and builds a string response.
             InputStream iStream = con.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
             StringBuilder response = new StringBuilder();
@@ -92,10 +92,9 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         String desc = params[4];
 
         switch (selector) {
-
             case "register":
                 try {
-                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
+                    //Sends a string "register" to the onProgressUpdate method to display the correct progress message.
                     publishProgress("register");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
@@ -110,7 +109,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     regData.put("password", pass);
 
                     //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    //This also runs the connection method, connecting to the server, sending JSON Object regData, and returning the response.
                     JSONObject jsonRegReturn = new JSONObject(connection(url,regData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
@@ -121,12 +120,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     //Log server response
                     Log.i(TAG, "RegisterActivity server response: "+returnRegValues.serverResponse);
 
-                    publishProgress("register");
-
                     return returnRegValues;
                 } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Exception:", e);
+                    Log.e(TAG, "Register exception: ", e);
                 }
             break;
 
@@ -148,7 +145,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     loginData.put("password", pass);
 
                     //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    //This also runs the connection method, connecting to the server, sending JSON Object loginData, and returning the response.
                     JSONObject jsonLoginReturn = new JSONObject(connection(url,loginData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector, loggedInUser and server response).
@@ -165,7 +162,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 catch (Exception e)
                 {
                     //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Exception:", e);
+                    Log.e(TAG, "Login exception: ", e);
                 }
             break;
 
@@ -187,7 +184,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     postData.put("postUser", user);
 
                     //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    //This also runs the connection method, connecting to the server, sending JSON Object postData, and returning the response.
                     JSONObject jsonNewPostReturn = new JSONObject(connection(url,postData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
@@ -223,7 +220,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     checkCon.put("temp", "temp");
 
                     //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending the data, and returning the response.
+                    //This also runs the connection method, connecting to the server, sending a placeholder json object, and returning the response.
                     JSONObject jsonNewPostReturn = new JSONObject(connection(url,checkCon));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
@@ -249,7 +246,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
                 publishProgress("logout");
 
-                //Log action
+                //Log action.
                 Log.i(TAG, "Logging out user");
 
                 //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
@@ -263,7 +260,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 editor.remove("LoggedInUser");
                 editor.commit();
 
-                //Uses BackgroundTasksResults constructor to return multiple strings (selector).
+                //Uses BackgroundTasksResults constructor to return strings (selector).
                 BackgroundTasksResults returnLogoutValues = new BackgroundTasksResults();
                 returnLogoutValues.selectorResult = "logout";
 
@@ -278,7 +275,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         return null;
     }
 
-    //Depending on the function executed, the correct progress dialog is set.
+    //Depending on the function executed, the correct progress dialog is set and displayed.
     @Override
     protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
@@ -311,17 +308,18 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         //Once executed, the dialog is dismissed.
         progressDialog.dismiss();
 
+        /*Depending on the selector result sent from the executed background task, the corresponding case is executed.
+          The majority display toasts to let the user know the outcome depending on the response from the server.*/
         switch (result.selectorResult)
         {
             case "register":
-                //Covers all outcomes of server responses and details actions to take based on each. (Creating toasts to tell users outcomes).
-                //Successful posting to database, txtUsername already existing, failure posting to database, and connection to database error.
                 if (result.serverResponse.equals("success"))
                 {
                     //This returns the user to the login screen on success and displays a toast saying successfully registered.
                     Intent i = new Intent (ctx, LoginActivity.class);
                     ctx.startActivity(i);
                     ((Activity)ctx).finish();
+
                     Toast.makeText(ctx, "Successfully registered!", Toast.LENGTH_LONG).show();
                 }
                 else if (result.serverResponse.equals("exists"))
@@ -338,14 +336,12 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 }
                 break;
 
-            //Once the login function has been executed the server returns a response.
-            //Displays toasts if the user doesn't exist or the password is incorrect or the user is correctly authenticated.
             case "login":
                 if (result.serverResponse.equals("authenticated"))
                 {
                     Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
 
-                    //Adds the logged in user string to shared preferences and commits it.
+                    //Adds the logged in user string to the active_user shared preferences and commits it.
                     SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putString("LoggedInUser", result.loggedInUser);
@@ -385,10 +381,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             case "checkcon":
                 if (result.serverResponse.equals("conErr"))
                 {
-                    //If there is a conenction issue, the LoggedInUser shared preference is removed (technically logging the user out) and a toast is displayed.
+                    /*If there is a connection issue, the "active_user" shared preference is removed
+                      (technically logging the user out) and a toast is displayed.*/
                     SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
-
                     editor.remove("LoggedInUser");
                     editor.commit();
 
@@ -396,7 +392,8 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                 }
                 else if (result.serverResponse.equals("connected")) {
-                    //If the connection can be established, the user is then logged in.
+                    /*If the connection can be established the user is logged in by starting the Dashboard activity as the "active_user" shared
+                      preference still exists. This will exist until it's removed when the user logs out.*/
                     Intent loggedIn = new Intent(ctx, DashboardActivity.class);
                     ctx.startActivity(loggedIn);
                     ((Activity) ctx).finish();

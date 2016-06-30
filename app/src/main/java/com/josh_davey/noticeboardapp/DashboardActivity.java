@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class DashboardActivity extends Activity {
+    //Defines a string to hold the logged in user.
     public String user;
 
     @Override
@@ -32,6 +33,7 @@ public class DashboardActivity extends Activity {
 
     public void addPostActivity(View view)
     {
+        //Starts the AddPostActivity, passing the username of the logged in user through the intent.
         Intent addPost = new Intent(this, AddPostActivity.class);
         addPost.putExtra("LoggedInUser", user);
         startActivity(addPost);
@@ -44,7 +46,7 @@ public class DashboardActivity extends Activity {
         logout.execute("logout",null,null,null,null);
     }
 
-    //Overides the method that controls the system back button. This calls the logout method.
+    //Overides the method that controls the system back button. This then calls the logout method.
     @Override
     public void onBackPressed()
     {
