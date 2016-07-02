@@ -155,8 +155,13 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Register exception: ", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "register";
+                    preventCrash.serverResponse = "conErr";
+                    return  preventCrash;
                 }
-            break;
 
             case "login":
                 try
@@ -194,8 +199,14 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Login exception: ", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "login";
+                    preventCrash.serverResponse = "conErr";
+                    return  preventCrash;
                 }
-            break;
+
 
             case "addpost":
                 try {
@@ -232,8 +243,13 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "addpost";
+                    preventCrash.serverResponse = "conErr";
+                    return  preventCrash;
                 }
-            break;
 
             case "checkcon":
                 try {
@@ -264,8 +280,13 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "checkcon";
+                    preventCrash.serverResponse = "conErr";
+                    return  preventCrash;
                 }
-                break;
 
             case "logout":
             try
@@ -359,7 +380,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 }
                 else if (result.serverResponse.equals("conErr"))
                 {
-                    Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Connection error. Unable to register.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -388,6 +409,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 {
                     Toast.makeText(ctx, "Incorrect password, please try again.", Toast.LENGTH_LONG).show();
                 }
+                else if (result.serverResponse.equals("conErr"))
+                {
+                    Toast.makeText(ctx, "Connection error. Unable to login.", Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case "addpost":
@@ -401,12 +426,19 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 }
                 else if (result.serverResponse.equals("conErr"))
                 {
-                    Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Connection error. Unable to add post.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case "checkcon":
-                if (result.serverResponse.equals("conErr"))
+                if (result.serverResponse.equals("connected")) {
+                    /*If the connection can be established the user is logged in by starting the Dashboard activity as the "active_user" shared
+                      preference still exists. This will exist until it's removed when the user logs out.*/
+                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
+                    ctx.startActivity(loggedIn);
+                    ((Activity) ctx).finish();
+                }
+                else if (result.serverResponse.equals("conErr"))
                 {
                     /*If there is a connection issue, the "active_user" shared preference is removed
                       (technically logging the user out) and a toast is displayed.*/
@@ -415,15 +447,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     editor.remove("LoggedInUser");
                     editor.commit();
 
-                    Toast.makeText(ctx, "Connection error.", Toast.LENGTH_LONG).show();
-
-                }
-                else if (result.serverResponse.equals("connected")) {
-                    /*If the connection can be established the user is logged in by starting the Dashboard activity as the "active_user" shared
-                      preference still exists. This will exist until it's removed when the user logs out.*/
-                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
-                    ctx.startActivity(loggedIn);
-                    ((Activity) ctx).finish();
+                    Toast.makeText(ctx, "Connection error. Your session has expired.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
