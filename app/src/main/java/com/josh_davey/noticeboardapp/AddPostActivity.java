@@ -49,7 +49,7 @@ public class AddPostActivity extends Activity {
         PostDesc = txtPostDesc.getText().toString();
 
         //The BackgroundTasks class is executed.
-        BackgroundTasks addPost = new BackgroundTasks(this);
+        BackgroundTasks addPost = new BackgroundTasks(this,null);
         addPost.execute("addpost", user, null, PostTitle, PostDesc);
     }
 

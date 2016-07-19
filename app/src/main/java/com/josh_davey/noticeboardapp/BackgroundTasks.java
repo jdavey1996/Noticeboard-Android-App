@@ -7,6 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -17,6 +22,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksResults> {
     //Tag for this class, used for logcat.
@@ -24,9 +31,18 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
     //Constuctor method to get the context from classes using this AsyncTask Class.
     Context ctx;
-    public BackgroundTasks(Context ctx) {
+    public BackgroundTasks(Context ctx, Activity activity) {
         this.ctx = ctx;
+        this.activity = activity;
     }
+
+
+
+    private ListView listView;
+    private Activity activity;
+
+
+
 
     //Creates variable for the progress bar that can be accessed by all methods within the class.
     ProgressDialog progressDialog;
@@ -289,36 +305,70 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 }
 
             case "logout":
-            try
-            {
-                //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
-                publishProgress("logout");
+                try
+                {
+                    //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("logout");
 
-                //Log action.
-                Log.i(TAG, "Logging out user");
+                    //Log action.
+                    Log.i(TAG, "Logging out user");
 
-                //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                Thread.sleep(3000);
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
 
-                //Loads shared preferences and an editor to edit the preferences.
-                SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
+                    //Loads shared preferences and an editor to edit the preferences.
+                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
 
-                //Removes LoggedInUser shared preference before logging out.
-                editor.remove("LoggedInUser");
-                editor.commit();
+                    //Removes LoggedInUser shared preference before logging out.
+                    editor.remove("LoggedInUser");
+                    editor.commit();
 
-                //Uses BackgroundTasksResults constructor to return strings (selector).
-                BackgroundTasksResults returnLogoutValues = new BackgroundTasksResults();
-                returnLogoutValues.selectorResult = "logout";
+                    //Uses BackgroundTasksResults constructor to return strings (selector).
+                    BackgroundTasksResults returnLogoutValues = new BackgroundTasksResults();
+                    returnLogoutValues.selectorResult = "logout";
 
-                return returnLogoutValues;
+                    return returnLogoutValues;
             }
             catch (Exception e)
             {
                 //Catches exceptions and displays them in the Log.
                 Log.e(TAG, "Exception:", e);
             }
+
+            case "loadposts":
+                try
+                {
+                    //Sends a string "loadposts" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("loadposts");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
+                    BackgroundTasksResults returnLoadPostsValues = new BackgroundTasksResults();
+                    returnLoadPostsValues.selectorResult = "loadposts";
+                    returnLoadPostsValues.serverResponse = "success";
+
+                    //***Test data***.
+                    Posts datatest = new Posts("josh","joshd96","test1");
+                    Posts datatest2 = new Posts("holl","holl96","test2");
+                    returnLoadPostsValues.data.add(datatest);
+                    returnLoadPostsValues.data.add(datatest2);
+
+                    return returnLoadPostsValues;
+
+                }
+                catch (Exception e)
+                {
+                    //Catches exceptions and displays them in the Log.
+                    Log.e(TAG, "Exception:", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "loadposts";
+                    preventCrash.serverResponse = "conErr";
+                    return  preventCrash;
+                }
         }
         return null;
     }
@@ -347,6 +397,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         else if (progress[0].equals("logout"))
         {
             progressDialog.setMessage("Logging out...");
+        }
+        else if (progress[0].equals("loadposts"))
+        {
+            progressDialog.setMessage("Loading posts...");
         }
         progressDialog.show();
     }
@@ -461,6 +515,25 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 //Displays toast to say logged out.
                 Toast.makeText(ctx, "Logged out.", Toast.LENGTH_LONG).show();
                 break;
+
+            case "loadposts":
+                if (result.serverResponse.equals("success")) {
+                    //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
+                    final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
+
+                    //Declares the listview to display data in.
+                    final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
+
+                    //Sets the listview's adapter to the one created above, containing the array list of data. This displays the data.
+                    dashboardList.setAdapter(dashboardListAdapter);
+
+                }
+                else if (result.serverResponse.equals("conErr"))
+                {
+                    Toast.makeText(ctx, "Connection error. Unable to load posts.", Toast.LENGTH_LONG).show();
+                }
+                break;
+
         }
     }
 }

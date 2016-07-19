@@ -52,7 +52,7 @@ public class RegisterActivity extends Activity {
         //If no errors are flagged, the BackgroundTasks class is executed, using the two user input strings.
         else
         {
-            BackgroundTasks register = new BackgroundTasks(this);
+            BackgroundTasks register = new BackgroundTasks(this,null);
             register.execute("register", RegUsername, RegPassword, null, null);
         }
     }
