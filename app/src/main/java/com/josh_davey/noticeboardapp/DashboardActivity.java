@@ -1,15 +1,24 @@
 package com.josh_davey.noticeboardapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class DashboardActivity extends Activity {
+import java.util.ArrayList;
+
+public class DashboardActivity extends AppCompatActivity {
     //Defines a string to hold the logged in user.
     public String user;
+
+    public ArrayList<Posts> postList = new ArrayList<Posts>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +38,27 @@ public class DashboardActivity extends Activity {
 
         //Sets the TextView to the logged in user, passed through shared preferences.
         displayUser.setText(user);
-    }
+
+
+        Button testButton = (Button)findViewById(R.id.button);
+
+        final ListAdapter dashboardListAdapter = new PostsAdapter(this, postList);
+        final ListView dashboardList= (ListView) findViewById(R.id.postsView);
+        final Posts object = new Posts("1","1","1");
+
+        dashboardList.setAdapter(dashboardListAdapter);
+
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //On click do this.
+                postList.add(object);
+
+                ((BaseAdapter) dashboardListAdapter).notifyDataSetChanged();
+            }
+        });
+}
+
 
     public void addPostActivity(View view)
     {
