@@ -6,15 +6,21 @@ define("DB_DATABASE", "DB_DashboardApp");
 
 $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
 
+if(!$con){
+    $response["message"] = "conErr";
+}
+else{
 	$sql = mysqli_query($con,"SELECT * FROM tblPosts");
-
 	$data = array();
+
 	while($row = $sql->fetch_assoc()){
-    	$data[] = $row;
+		$data[] = $row;
 	}
-echo json_encode($data);
+	$response["message"] = "success";
+	$response["data"] = $data;	
+}
 
-
+echo json_encode($response);
 mysqli_close($con);
 ?> 
    

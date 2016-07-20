@@ -351,8 +351,11 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     //Sets the URL of the PHP script that the app is requesting data from.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_loadposts.php");
 
-                    //Stores the results on running the connectionGet method in a JSON array. Containing post data.
-                    JSONArray result = new JSONArray(connectionGet(url));
+                    //Stores the results on running the connectionGet method in a JSON object. Containing all received data.
+                    JSONObject result = new JSONObject(connectionGet(url));
+
+                    //Extracts the data containing only posts from the JSON object and stores it in a JSON array.
+                    JSONArray posts = result.getJSONArray("data");
 
                     //Creates an object to store all return responses for the onPostExecute method, and sets the selector.
                     BackgroundTasksResults returnLoadPostsValues = new BackgroundTasksResults();
@@ -363,15 +366,15 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     /*If any posts have been gathered and stored in the json array, then they are stored in a temporary object
                       and added to an arraylist to be passed to the onPostExecute method and dispayed in the listview.*/
-                    if (result.length() > 0)
+                    if (posts.length() > 0)
                     {
-                        for (int i = 0; i < result.length(); i++) {
-                            JSONObject tempJson = new JSONObject((result.getString(i)));
+                        for (int i = 0; i < posts.length(); i++) {
+                            JSONObject tempJson = new JSONObject((posts.getString(i)));
                             Posts tempPost = new Posts(tempJson.get("post_title").toString(),tempJson.get("post_desc").toString(),tempJson.get("post_user").toString());
                             returnLoadPostsValues.data.add(tempPost);
                         }
-
-                        returnLoadPostsValues.serverResponse = "success";
+                        //Sets the server response to the message sent along with the array of posts.
+                        returnLoadPostsValues.serverResponse = result.getString("message");
                     }
                     //If no posts exist then the server response sent to onPostExecute is noposts, so the correct toast can be displayed.
                     else
@@ -560,7 +563,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
                 }
                 break;
-
         }
     }
 }
