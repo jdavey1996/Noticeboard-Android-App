@@ -2,16 +2,17 @@ package com.josh_davey.noticeboardapp;
 
 public class Posts {
     public String postNum;
-    public String postName;
-    public String postUser;
+    public String postTitle;
     public String postDesc;
+    public String postUser;
+
 
     //Set posts
-    public Posts(String postName, String postUser, String postDesc)
+    public Posts(String postTitle, String postDesc, String postUser)
     {
-        this.postName = postName;
-        this.postUser = postUser;
+        this.postTitle = postTitle;
         this.postDesc = postDesc;
+        this.postUser = postUser;
     }
 
     //Get posts
@@ -19,8 +20,8 @@ public class Posts {
         return postNum;
     }
 
-    public String getPostName() {
-        return postName;
+    public String getPostTitle() {
+        return postTitle;
     }
 
     public String getPostUser() {

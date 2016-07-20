@@ -29,7 +29,7 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
         TextView taskDesc = (TextView)convertView.findViewById(R.id.section2);
         TextView taskAuthor = (TextView)convertView.findViewById(R.id.section3);
 
-        taskTitle.setText(post.getPostName());
+        taskTitle.setText(post.getPostTitle());
         taskDesc.setText(post.getPostDesc());
         taskAuthor.setText(post.getPostUser());
 

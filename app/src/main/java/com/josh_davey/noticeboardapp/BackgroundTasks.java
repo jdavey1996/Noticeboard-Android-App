@@ -351,34 +351,35 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     //Sets the URL of the PHP script that the app is requesting data from.
                     URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_loadposts.php");
 
-                    //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server and getting the response.
-
+                    //Stores the results on running the connectionGet method in a JSON array. Containing post data.
                     JSONArray result = new JSONArray(connectionGet(url));
 
-                    for (int i = 1; i < result.length(); i++) {
-                        JSONObject temp = new JSONObject((result.getString(i)));
-                        Log.i(TAG, temp.get("post_num").toString());
-                    }
-
-
+                    //Creates an object to store all return responses for the onPostExecute method, and sets the selector.
                     BackgroundTasksResults returnLoadPostsValues = new BackgroundTasksResults();
                     returnLoadPostsValues.selectorResult = "loadposts";
-                    returnLoadPostsValues.serverResponse = "success";
 
+                    //Clears current array of posts.
+                    returnLoadPostsValues.data.clear();
 
+                    /*If any posts have been gathered and stored in the json array, then they are stored in a temporary object
+                      and added to an arraylist to be passed to the onPostExecute method and dispayed in the listview.*/
+                    if (result.length() > 0)
+                    {
+                        for (int i = 0; i < result.length(); i++) {
+                            JSONObject tempJson = new JSONObject((result.getString(i)));
+                            Posts tempPost = new Posts(tempJson.get("post_title").toString(),tempJson.get("post_desc").toString(),tempJson.get("post_user").toString());
+                            returnLoadPostsValues.data.add(tempPost);
+                        }
 
-
-
-
-                    /***Test data***.
-                    Posts datatest = new Posts("josh","joshd96","test1");
-                    Posts datatest2 = new Posts("holl","holl96","test2");
-                    returnLoadPostsValues.data.add(datatest);
-                    returnLoadPostsValues.data.add(datatest2);*/
+                        returnLoadPostsValues.serverResponse = "success";
+                    }
+                    //If no posts exist then the server response sent to onPostExecute is noposts, so the correct toast can be displayed.
+                    else
+                    {
+                        returnLoadPostsValues.serverResponse = "noposts";
+                    }
 
                     return returnLoadPostsValues;
-
                 }
                 catch (Exception e)
                 {
@@ -541,18 +542,22 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
                     //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
-                    /*final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
+                    final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
 
                     //Declares the listview to display data in.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
 
                     //Sets the listview's adapter to the one created above, containing the array list of data. This displays the data.
-                    dashboardList.setAdapter(dashboardListAdapter);*/
+                    dashboardList.setAdapter(dashboardListAdapter);
 
                 }
                 else if (result.serverResponse.equals("conErr"))
                 {
                     Toast.makeText(ctx, "Connection error. Unable to load posts.", Toast.LENGTH_LONG).show();
+                }
+                else if (result.serverResponse.equals("noposts"))
+                {
+                    Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
