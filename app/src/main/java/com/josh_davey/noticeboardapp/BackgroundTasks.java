@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -345,15 +348,34 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
                     Thread.sleep(3000);
 
+                    //Sets the URL of the PHP script that the app is requesting data from.
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_loadposts.php");
+
+                    //Creates a json object and adds the string response from the server to it.
+                    //This also runs the connection method, connecting to the server and getting the response.
+
+                    JSONArray result = new JSONArray(connectionGet(url));
+
+                    for (int i = 1; i < result.length(); i++) {
+                        JSONObject temp = new JSONObject((result.getString(i)));
+                        Log.i(TAG, temp.get("post_num").toString());
+                    }
+
+
                     BackgroundTasksResults returnLoadPostsValues = new BackgroundTasksResults();
                     returnLoadPostsValues.selectorResult = "loadposts";
                     returnLoadPostsValues.serverResponse = "success";
 
-                    //***Test data***.
+
+
+
+
+
+                    /***Test data***.
                     Posts datatest = new Posts("josh","joshd96","test1");
                     Posts datatest2 = new Posts("holl","holl96","test2");
                     returnLoadPostsValues.data.add(datatest);
-                    returnLoadPostsValues.data.add(datatest2);
+                    returnLoadPostsValues.data.add(datatest2);*/
 
                     return returnLoadPostsValues;
 
@@ -519,13 +541,13 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
                     //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
-                    final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
+                    /*final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
 
                     //Declares the listview to display data in.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
 
                     //Sets the listview's adapter to the one created above, containing the array list of data. This displays the data.
-                    dashboardList.setAdapter(dashboardListAdapter);
+                    dashboardList.setAdapter(dashboardListAdapter);*/
 
                 }
                 else if (result.serverResponse.equals("conErr"))
