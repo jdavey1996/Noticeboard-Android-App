@@ -22,8 +22,6 @@ public class DashboardActivity extends AppCompatActivity {
     //Defines a string to hold the logged in user.
     public String user;
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +51,13 @@ public class DashboardActivity extends AppCompatActivity {
         //Reloads the posts when the dashboard activity is resumed. eg. After a new post has been added.
         BackgroundTasks reloadPosts = new BackgroundTasks(this,this);
         reloadPosts.execute("loadposts",null,null,null,null);
+    }
+
+    public void refreshPosts(View view)
+    {
+        //Refreshes the list of posts.
+        BackgroundTasks refreshPostsBtn = new BackgroundTasks(this,this);
+        refreshPostsBtn.execute("loadposts",null,null,null,null);
     }
 
     public void addPostActivity(View view)
