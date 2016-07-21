@@ -1,5 +1,6 @@
 package com.josh_davey.noticeboardapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,8 +22,8 @@ public class DashboardActivity extends AppCompatActivity {
     //Defines a string to hold the logged in user.
     public String user;
 
-    public ListView dashboardList;
-    //public ArrayList<Posts> postList = new ArrayList<Posts>();
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         //Loads shared preferences and an editor to edit the preferences.
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
 
         //Gets the logged in user from shared preferences.
         user = pref.getString("LoggedInUser","DEFAULT") ;
@@ -46,6 +46,14 @@ public class DashboardActivity extends AppCompatActivity {
         BackgroundTasks loadposts = new BackgroundTasks(this,this);
         loadposts.execute("loadposts",null,null,null,null);
 }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        //Reloads the posts when the dashboard activity is resumed. eg. After a new post has been added.
+        BackgroundTasks reloadPosts = new BackgroundTasks(this,this);
+        reloadPosts.execute("loadposts",null,null,null,null);
+    }
 
     public void addPostActivity(View view)
     {

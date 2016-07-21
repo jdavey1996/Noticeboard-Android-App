@@ -1,6 +1,7 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -48,8 +49,8 @@ public class AddPostActivity extends Activity {
         PostTitle = txtPostTitle.getText().toString();
         PostDesc = txtPostDesc.getText().toString();
 
-        //The BackgroundTasks class is executed.
-        BackgroundTasks addPost = new BackgroundTasks(this,null);
+        //The BackgroundTasks class is executed to add a new post to the database.
+        BackgroundTasks addPost = new BackgroundTasks(this,this);
         addPost.execute("addpost", user, null, PostTitle, PostDesc);
     }
 

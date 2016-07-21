@@ -34,18 +34,11 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
     //Constuctor method to get the context from classes using this AsyncTask Class.
     Context ctx;
+    Activity activity;
     public BackgroundTasks(Context ctx, Activity activity) {
         this.ctx = ctx;
         this.activity = activity;
     }
-
-
-
-    private ListView listView;
-    private Activity activity;
-
-
-
 
     //Creates variable for the progress bar that can be accessed by all methods within the class.
     ProgressDialog progressDialog;
@@ -499,6 +492,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 if (result.serverResponse.equals("success"))
                 {
                     Toast.makeText(ctx, "Posted to database.", Toast.LENGTH_LONG).show();
+                    activity.finish();
                 }
                 else if (result.serverResponse.equals("failure"))
                 {
