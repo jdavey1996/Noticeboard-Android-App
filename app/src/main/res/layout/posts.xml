@@ -12,12 +12,11 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="16sp"
-        android:background="#4fa5d5">
-</TextView>
+        android:background="#4fa5d5" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section2"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="16sp"
@@ -26,11 +25,20 @@
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section3"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="16sp"
         android:background="#21a809"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:id="@+id/deletePostBtn"
+        android:padding="8dp"
+        android:textSize="16sp"
         android:layout_gravity="center_horizontal" />
 
 
