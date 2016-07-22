@@ -39,18 +39,14 @@ public class DashboardActivity extends AppCompatActivity {
 
         //Sets the TextView to the logged in user, passed through shared preferences.
         displayUser.setText(user);
-
-        //Loads the posts when the dashboard activity is loaded.
-        BackgroundTasks loadposts = new BackgroundTasks(this,this);
-        loadposts.execute("loadposts",null,null,null,null);
 }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        //Reloads the posts when the dashboard activity is resumed. eg. After a new post has been added.
-        BackgroundTasks reloadPosts = new BackgroundTasks(this,this);
-        reloadPosts.execute("loadposts",null,null,null,null);
+        //Loads the posts when the dashboard activity is resumed. eg. After logging in and when a new post has been added.
+        BackgroundTasks loadPosts = new BackgroundTasks(this,this);
+        loadPosts.execute("loadposts",null,null,null,null);
     }
 
     public void refreshPosts(View view)
