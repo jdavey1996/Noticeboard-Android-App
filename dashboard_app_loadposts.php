@@ -10,7 +10,7 @@ if(!$con){
     $response["message"] = "conErr";
 }
 else{
-	$sql = mysqli_query($con,"SELECT * FROM tblPosts");
+	$sql = mysqli_query($con,"SELECT * FROM tblPosts ORDER BY  `post_num` DESC ");
 	$data = array();
 
 	while($row = $sql->fetch_assoc()){
