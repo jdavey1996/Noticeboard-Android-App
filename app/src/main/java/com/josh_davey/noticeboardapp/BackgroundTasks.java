@@ -133,6 +133,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         String pass = params[2];
         String title = params[3];
         String desc = params[4];
+        String postNumToDelete = params[5];
 
         switch (selector) {
             case "register":
@@ -218,7 +219,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     preventCrash.serverResponse = "conErr";
                     return  preventCrash;
                 }
-
 
             case "addpost":
                 try {
@@ -363,7 +363,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     {
                         for (int i = 0; i < posts.length(); i++) {
                             JSONObject tempJson = new JSONObject((posts.getString(i)));
-                            Posts tempPost = new Posts(tempJson.get("post_title").toString(),tempJson.get("post_desc").toString(),tempJson.get("post_user").toString());
+                            Posts tempPost = new Posts(tempJson.get("post_num").toString(),tempJson.get("post_title").toString(),tempJson.get("post_desc").toString(),tempJson.get("post_user").toString());
                             returnLoadPostsValues.data.add(tempPost);
                         }
                         //Sets the server response to the message sent along with the array of posts.
@@ -388,13 +388,55 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     preventCrash.serverResponse = "conErr";
                     return  preventCrash;
                 }
-        }
-        return null;
-    }
 
-    //Depending on the function executed, the correct progress dialog is set and displayed.
-    @Override
-    protected void onProgressUpdate(String... progress) {
+            case "deletepost":
+                try {
+                    //Sends a string "deletepost" to the onProgressUpdate method to display the correct progress message.
+                    publishProgress("deletepost");
+
+                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
+                    Thread.sleep(3000);
+
+                    //Sets the URL of the PHP script that receives data from this AsyncTask.
+                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_deletepost.php");
+
+                    //Creates a json object, converts post number to integer and stores data within the object ready to be sent.
+                    JSONObject postData = new JSONObject();
+                    Integer postNumConverted = Integer.parseInt(postNumToDelete);
+                    postData.put("postNum", postNumConverted);
+
+                    //Creates a json object and adds the string response from the server to it.
+                    //This also runs the connection method, connecting to the server, sending JSON Object postData, and returning the response.
+                    JSONObject jsonDeletePostReturn = new JSONObject(connectionPost(url,postData));
+
+                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
+                    BackgroundTasksResults returnDeletePostValues = new BackgroundTasksResults();
+                    returnDeletePostValues.selectorResult = "deletepost";
+                    returnDeletePostValues.serverResponse = jsonDeletePostReturn.getString("message");
+
+                    //Log server response
+                    Log.i(TAG, "Add post server response: "+returnDeletePostValues.serverResponse);
+
+                    return returnDeletePostValues;
+                }
+                catch (Exception e)
+                {
+                    //Catches exceptions and displays them in the Log.
+                    Log.e(TAG, "Exception:", e);
+
+                    //To prevent app from crashing, set the return results to direct to an error message.
+                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
+                    preventCrash.selectorResult = "deletepost";
+        preventCrash.serverResponse = "conErr";
+        return  preventCrash;
+    }
+}
+return null;
+        }
+
+//Depending on the function executed, the correct progress dialog is set and displayed.
+@Override
+protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
 
         if (progress[0].equals("login"))
@@ -420,6 +462,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         else if (progress[0].equals("loadposts"))
         {
             progressDialog.setMessage("Loading posts...");
+        }
+        else if (progress[0].equals("deletepost"))
+        {
+            progressDialog.setMessage("Deleting post...");
         }
         progressDialog.show();
     }
@@ -540,7 +586,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 if (result.serverResponse.equals("success")) {
                     //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
                     final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
-
                     //Declares the listview to display data in.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
 
@@ -556,6 +601,17 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 {
                     Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
                 }
+                break;
+
+            case "deletepost":
+                if (result.serverResponse.equals("success")) {
+                    Toast.makeText(ctx, "Successfully deleted.", Toast.LENGTH_LONG).show();
+                }
+                else if (result.serverResponse.equals("conErr"))
+                {
+                    Toast.makeText(ctx, "Connection error. Unable to delete post.", Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
     }

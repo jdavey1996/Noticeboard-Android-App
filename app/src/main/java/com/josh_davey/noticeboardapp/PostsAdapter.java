@@ -35,9 +35,11 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
         TextView taskDesc = (TextView)convertView.findViewById(R.id.section2);
         final TextView taskAuthor = (TextView)convertView.findViewById(R.id.section3);
 
+
         taskTitle.setText(post.getPostTitle());
         taskDesc.setText(post.getPostDesc());
         taskAuthor.setText(post.getPostUser());
+        final String postNumber = post.getPostNum();
 
         //Loads shared preferences and an editor & Gets the logged in user from shared preferences.
         SharedPreferences pref = getContext().getSharedPreferences("active_user", getContext().MODE_PRIVATE);
@@ -52,6 +54,8 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
                 @Override
                 public void onClick(View v) {
                     //Add delete post functionality.
+                    BackgroundTasks deletePost = new BackgroundTasks(getContext(),null);
+                    deletePost.execute("deletepost", null, null, null, null, postNumber);
                 }
             });
         }

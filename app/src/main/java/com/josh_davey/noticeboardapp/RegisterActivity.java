@@ -53,7 +53,7 @@ public class RegisterActivity extends Activity {
         else
         {
             BackgroundTasks register = new BackgroundTasks(this,null);
-            register.execute("register", RegUsername, RegPassword, null, null);
+            register.execute("register", RegUsername, RegPassword, null, null, null);
         }
     }
 }

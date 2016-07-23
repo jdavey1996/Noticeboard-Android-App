@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -46,14 +47,14 @@ public class DashboardActivity extends AppCompatActivity {
         super.onPostResume();
         //Loads the posts when the dashboard activity is resumed. eg. After logging in and when a new post has been added.
         BackgroundTasks loadPosts = new BackgroundTasks(this,this);
-        loadPosts.execute("loadposts",null,null,null,null);
+        loadPosts.execute("loadposts",null,null,null,null,null);
     }
 
     public void refreshPosts(View view)
     {
         //Refreshes the list of posts.
         BackgroundTasks refreshPostsBtn = new BackgroundTasks(this,this);
-        refreshPostsBtn.execute("loadposts",null,null,null,null);
+        refreshPostsBtn.execute("loadposts",null,null,null,null,null);
     }
 
     public void addPostActivity(View view)
@@ -68,7 +69,7 @@ public class DashboardActivity extends AppCompatActivity {
     {
         //Calls and executes the logout section of the asynctask, clearing the shared preferences, logging the user out.
         BackgroundTasks logout = new BackgroundTasks(this,null);
-        logout.execute("logout",null,null,null,null);
+        logout.execute("logout",null,null,null,null,null);
     }
 
     //Overides the method that controls the system back button. This then calls the logout method.

@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             //Runs the checkconnection section of the async task which then logs the user in again if it succeeds.
             BackgroundTasks checkCon = new BackgroundTasks(this,null);
-            checkCon.execute("checkcon",null,null,null,null);
+            checkCon.execute("checkcon",null,null,null,null, null);
         }
     }
 
@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //The BackgroundTasks class is executed, using the two user input strings.
         BackgroundTasks login = new BackgroundTasks(this, null);
-        login.execute("login", LoginUsername, LoginPassword, null, null);
+        login.execute("login", LoginUsername, LoginPassword, null, null, null);
     }
 }
 
