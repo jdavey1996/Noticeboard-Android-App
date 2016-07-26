@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.text.format.Time;
 import android.util.Config;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -25,7 +27,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.zip.Inflater;
 
 public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksResults> {
@@ -592,6 +597,12 @@ protected void onProgressUpdate(String... progress) {
                     //Sets the listview's adapter to the one created above, containing the array list of data. This displays the data.
                     dashboardList.setAdapter(dashboardListAdapter);
 
+                    //Stored current date and time in a string.
+                    String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
+                    //Updated a textview in the dashboard activity with the date and time this was last executed.
+                    TextView lastUpdatedText = (TextView)activity.findViewById(R.id.lastUpdated);
+                    lastUpdatedText.setText(mydate);
                 }
                 else if (result.serverResponse.equals("conErr"))
                 {

@@ -51,7 +51,7 @@ public class AddPostActivity extends Activity {
 
         //The BackgroundTasks class is executed to add a new post to the database.
         BackgroundTasks addPost = new BackgroundTasks(this,this);
-        addPost.execute("addpost", user, null, PostTitle, PostDesc);
+        addPost.execute("addpost", user, null, PostTitle, PostDesc, null);
     }
 
 }
