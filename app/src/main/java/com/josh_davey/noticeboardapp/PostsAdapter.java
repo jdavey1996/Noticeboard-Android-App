@@ -1,5 +1,6 @@
 package com.josh_davey.noticeboardapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 
 public class PostsAdapter extends ArrayAdapter<Posts> {
 
-    public PostsAdapter(Context context, ArrayList<Posts> postList) {
+    private Activity activity;
+    public PostsAdapter(Activity context, ArrayList<Posts> postList) {
         super(context,0,postList);
+        this.activity=context;
     }
 
 
@@ -54,7 +57,7 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
                 @Override
                 public void onClick(View v) {
                     //Add delete post functionality.
-                    BackgroundTasks deletePost = new BackgroundTasks(getContext(),null);
+                    BackgroundTasks deletePost = new BackgroundTasks(getContext(),activity);
                     deletePost.execute("deletepost", null, null, null, null, postNumber);
                 }
             });
@@ -66,7 +69,9 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
 
         notifyDataSetChanged();
 
+
         return convertView;
     }
+
 }
 

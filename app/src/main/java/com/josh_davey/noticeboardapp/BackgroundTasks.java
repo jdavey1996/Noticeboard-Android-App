@@ -420,7 +420,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnDeletePostValues.serverResponse = jsonDeletePostReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "Add post server response: "+returnDeletePostValues.serverResponse);
+                    Log.i(TAG, "Delete post server response: "+returnDeletePostValues.serverResponse);
 
                     return returnDeletePostValues;
                 }
@@ -590,7 +590,7 @@ protected void onProgressUpdate(String... progress) {
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
                     //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
-                    final ListAdapter dashboardListAdapter = new PostsAdapter(ctx, result.data);
+                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, result.data);
                     //Declares the listview to display data in.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
 
@@ -617,6 +617,8 @@ protected void onProgressUpdate(String... progress) {
             case "deletepost":
                 if (result.serverResponse.equals("success")) {
                     Toast.makeText(ctx, "Successfully deleted.", Toast.LENGTH_LONG).show();
+                    //If the deletion is successful, a new asynctask is loaded, loading the posts again.
+                    new BackgroundTasks(ctx,activity).execute("loadposts",null,null,null,null,null);
                 }
                 else if (result.serverResponse.equals("conErr"))
                 {
