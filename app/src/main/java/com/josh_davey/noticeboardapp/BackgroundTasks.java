@@ -590,7 +590,10 @@ protected void onProgressUpdate(String... progress) {
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
                     //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
-                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, result.data);
+
+                    PostsAdapter tempposts = new PostsAdapter(activity,null);
+
+                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, tempposts.filterList(result.data));
                     //Declares the listview to display data in.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
 

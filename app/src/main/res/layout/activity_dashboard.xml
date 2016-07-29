@@ -87,5 +87,17 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View your posts only"
+        android:id="@+id/postsViewSelect"
+        android:checked="false"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/lastUpdated"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:enabled="true" />
+
 
 </RelativeLayout>

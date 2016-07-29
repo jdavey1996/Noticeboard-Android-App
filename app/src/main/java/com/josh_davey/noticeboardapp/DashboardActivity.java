@@ -7,13 +7,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +44,31 @@ public class DashboardActivity extends AppCompatActivity {
 
         //Sets the TextView to the logged in user, passed through shared preferences.
         displayUser.setText(user);
+
+        Switch sw = (Switch)findViewById(R.id.postsViewSelect);
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ListView tem = (ListView)findViewById(R.id.postsView);
+                //ListAdapter test = tem.getAdapter();
+                ((ArrayAdapter)tem.getAdapter()).notifyDataSetChanged();
+            }
+
+        });
+
+
+
+
+
+
 }
+
+    public void testmeth(View view)
+    {
+
+
+    }
+
 
     @Override
     protected void onPostResume() {
