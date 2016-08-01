@@ -24,21 +24,19 @@ public class LoginActivity extends AppCompatActivity {
 
         //Loads shared preferences.
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        String user = pref.getString("LoggedInUser","DEFAULT") ;
+        String user = pref.getString("LoggedInUser", "DEFAULT");
 
         //Runs commands if there is a username still stored in the LoggedInUser shared preference.
-        if ((!(user).equals("DEFAULT")))
-        {
+        if ((!(user).equals("DEFAULT"))) {
             //Runs the checkconnection section of the async task which then logs the user in again if it succeeds.
-            BackgroundTasks checkCon = new BackgroundTasks(this,null);
-            checkCon.execute("checkcon",null,null,null,null, null);
+            BackgroundTasks checkCon = new BackgroundTasks(this, null);
+            checkCon.execute("checkcon", null, null, null, null, null);
         }
     }
 
     //Method to open the register activity.
-    public void startRegister(View view)
-    {
-        startActivity(new Intent(this,RegisterActivity.class));
+    public void startRegister(View view) {
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 
     //Method to execute logging in, using the class BackgroundTasks.

@@ -35,24 +35,20 @@ public class RegisterActivity extends Activity {
         RegPassword = txtRegPassword.getText().toString();
 
         //If the inputs contain characters that aren't alphanumerical, a corresponding error toast is displayed.
-        if ((!RegUsername.matches("^[a-zA-Z0-9]*$")) || (!RegPassword.matches("^[a-zA-Z0-9]*$")))
-        {
+        if ((!RegUsername.matches("^[a-zA-Z0-9]*$")) || (!RegPassword.matches("^[a-zA-Z0-9]*$"))) {
             Toast.makeText(RegisterActivity.this, "Inputs can only contain numbers and letters.", Toast.LENGTH_SHORT).show();
         }
         //If either input is empty, a corresponding error toast is displayed.
-        else if ((RegUsername.isEmpty()) || (RegPassword.isEmpty()))
-        {
+        else if ((RegUsername.isEmpty()) || (RegPassword.isEmpty())) {
             Toast.makeText(RegisterActivity.this, "Inputs cannot be left empty.", Toast.LENGTH_SHORT).show();
         }
         //If the inputs are too short, a corresponding error toast is displayed.
-        else if ((RegUsername.length() < 5) || (RegPassword.length() < 10))
-        {
+        else if ((RegUsername.length() < 5) || (RegPassword.length() < 10)) {
             Toast.makeText(RegisterActivity.this, "Usernames have to be a minimum of 5 characters and passwords 10 characters.", Toast.LENGTH_SHORT).show();
         }
         //If no errors are flagged, the BackgroundTasks class is executed, using the two user input strings.
-        else
-        {
-            BackgroundTasks register = new BackgroundTasks(this,null);
+        else {
+            BackgroundTasks register = new BackgroundTasks(this, null);
             register.execute("register", RegUsername, RegPassword, null, null, null);
         }
     }

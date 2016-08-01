@@ -11,8 +11,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -37,16 +39,31 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     //Tag for this class, used for logcat.
     private static final String TAG = "BackgroundTasks";
 
-    //Set up interface and methods the access the data sent from this asynctask.
+    //Set up interface and methods the access the data sent from this asynctask, the list of posts..
     public interface OnAsyncResult {
         public abstract void onResultSuccess(final ArrayList<Posts> listFromAsync);
     }
+
     OnAsyncResult onAsyncResult;
-           public void setOnResultListener(OnAsyncResult onAsyncResult) {
-                    if (onAsyncResult != null) {
-                            this.onAsyncResult = onAsyncResult;
-                       }
-               }
+
+    public void setOnResultListener(OnAsyncResult onAsyncResult) {
+        if (onAsyncResult != null) {
+            this.onAsyncResult = onAsyncResult;
+        }
+    }
+
+    //Set up interface and method the access the data sent from this asynctask when a post is deleted.
+    public interface Ifdeleted {
+        public void successdeleted(final String deleted);
+    }
+
+    public Ifdeleted ifdeleted;
+
+    public void setIfdeleted(Ifdeleted ifdeleted) {
+        if (ifdeleted != null) {
+            this.ifdeleted = ifdeleted;
+        }
+    }
 
     //Creates variable for the progress bar that can be accessed by all methods within the class.
     ProgressDialog progressDialog;
@@ -136,6 +153,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         String title = params[3];
         String desc = params[4];
         String postNumToDelete = params[5];
+
 
         switch (selector) {
             case "register":
@@ -559,17 +577,19 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             case "deletepost":
                 if (result.serverResponse.equals("success")) {
                     Toast.makeText(ctx, "Successfully deleted.", Toast.LENGTH_LONG).show();
-                    //If the deletion is successful, a new asynctask is loaded, loading the posts again.
-                    //new BackgroundTasks(ctx,activity).execute("loadposts",null,null,null,null,null);
+                    /*If the deletion is successful, "deleted" is sent via an interface to the PostsAdapter class so the post is deleted from the list
+                      without redownloading all posts again.*/
+                    ifdeleted.successdeleted("deleted");
+
                 } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to delete post.", Toast.LENGTH_LONG).show();
+                    /*If the deletion is unsuccessful, "notdeleted" is sent via an interface to the PostsAdapter class so the post is not deleted
+                     from the list without redownloading all posts again.*/
+                    ifdeleted.successdeleted("notdeleted");
                 }
-
                 break;
         }
     }
-
-
 }
 
 

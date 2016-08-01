@@ -8,8 +8,7 @@ public class Posts {
 
 
     //Set posts
-    public Posts(String postNum, String postTitle, String postDesc, String postUser)
-    {
+    public Posts(String postNum, String postTitle, String postDesc, String postUser) {
         this.postNum = postNum;
         this.postTitle = postTitle;
         this.postDesc = postDesc;

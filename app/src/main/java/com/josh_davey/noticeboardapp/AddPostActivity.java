@@ -1,7 +1,6 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -53,5 +52,4 @@ public class AddPostActivity extends Activity {
         BackgroundTasks addPost = new BackgroundTasks(this,this);
         addPost.execute("addpost", user, null, PostTitle, PostDesc, null);
     }
-
 }

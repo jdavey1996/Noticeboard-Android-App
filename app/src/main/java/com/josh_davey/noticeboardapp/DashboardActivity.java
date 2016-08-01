@@ -12,13 +12,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 public class DashboardActivity extends AppCompatActivity {
     //Defines a string to hold the logged in user.
     public String user;
     Context ctx = this;
-    Activity activity =this;
+    Activity activity = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
     //Receives data from the asynctask, being the list of posts whenever it gets refreshed.
     BackgroundTasks.OnAsyncResult onAsyncResult = new BackgroundTasks.OnAsyncResult() {
         @Override
-        public void onResultSuccess(final ArrayList<Posts>listFromAsync) {
+        public void onResultSuccess(final ArrayList<Posts> listFromAsync) {
             //Initialises the switch to select all or just the users posts. Then initialises a listener for if the checked state changed.
             Switch sw = (Switch) findViewById(R.id.postsViewSelect);
             sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -58,7 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
                     //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
                     PostsFilter filter = new PostsFilter(ctx, activity);
                     final ListAdapter dashboardListAdapter = new PostsAdapter(activity, filter.filter(listFromAsync));
-                    final ListView dashboardList = (ListView)findViewById(R.id.postsView);
+                    final ListView dashboardList = (ListView) findViewById(R.id.postsView);
                     dashboardList.setAdapter(dashboardListAdapter);
                 }
 
@@ -66,33 +67,29 @@ public class DashboardActivity extends AppCompatActivity {
         }
     };
 
-    public void loadPosts(View view)
-    {
+    public void loadPosts(View view) {
         //Refreshes the list of posts and set the listener for the results returned from asynctask.
-        BackgroundTasks refreshPostsBtn = new BackgroundTasks(this,this);
+        BackgroundTasks refreshPostsBtn = new BackgroundTasks(this, this);
         refreshPostsBtn.setOnResultListener(onAsyncResult);
-        refreshPostsBtn.execute("loadposts",null,null,null,null,null);
+        refreshPostsBtn.execute("loadposts", null, null, null, null, null);
     }
 
-    public void addPostActivity(View view)
-    {
+    public void addPostActivity(View view) {
         //Starts the AddPostActivity, passing the username of the logged in user through the intent.
         Intent addPost = new Intent(this, AddPostActivity.class);
         addPost.putExtra("LoggedInUser", user);
         startActivity(addPost);
     }
 
-    public void logout(View view)
-    {
+    public void logout(View view) {
         //Calls and executes the logout section of the asynctask, clearing the shared preferences, logging the user out.
-        BackgroundTasks logout = new BackgroundTasks(this,null);
-        logout.execute("logout",null,null,null,null,null);
+        BackgroundTasks logout = new BackgroundTasks(this, null);
+        logout.execute("logout", null, null, null, null, null);
     }
 
     //Overides the method that controls the system back button. This then calls the logout method.
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         logout(null);
     }
 }
