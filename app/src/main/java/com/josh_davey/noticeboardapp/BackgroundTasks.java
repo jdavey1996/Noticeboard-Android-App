@@ -6,17 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.text.format.Time;
-import android.util.Config;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -27,23 +21,32 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.zip.Inflater;
 
 public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksResults> {
-    //Tag for this class, used for logcat.
-    private static final String TAG = "BackgroundTasks";
-
     //Constuctor method to get the context from classes using this AsyncTask Class.
     Context ctx;
     Activity activity;
+
     public BackgroundTasks(Context ctx, Activity activity) {
         this.ctx = ctx;
         this.activity = activity;
     }
+
+    //Tag for this class, used for logcat.
+    private static final String TAG = "BackgroundTasks";
+
+    //Set up interface and methods the access the data sent from this asynctask.
+    public interface OnAsyncResult {
+        public abstract void onResultSuccess(final ArrayList<Posts> listFromAsync);
+    }
+    OnAsyncResult onAsyncResult;
+           public void setOnResultListener(OnAsyncResult onAsyncResult) {
+                    if (onAsyncResult != null) {
+                            this.onAsyncResult = onAsyncResult;
+                       }
+               }
 
     //Creates variable for the progress bar that can be accessed by all methods within the class.
     ProgressDialog progressDialog;
@@ -52,13 +55,12 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     protected void onPreExecute() {
         super.onPreExecute();
         //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
-        progressDialog = new ProgressDialog(ctx,R.style.AppTheme_Dark_Dialog);
+        progressDialog = new ProgressDialog(ctx, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
     }
 
     //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
-    protected String connectionPost(URL url, JSONObject data)
-    {
+    protected String connectionPost(URL url, JSONObject data) {
         try {
             //Sets the connection.
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -90,9 +92,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
             //Returns string response from the server.
             return response.toString();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //Catches exceptions and displays them in the Log.
             Log.e(TAG, "Exception:", e);
         }
@@ -100,8 +100,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     }
 
     //Method to establish connection and get the server response. This accepts a URL link to the PHP script.
-    protected String connectionGet(URL url)
-    {
+    protected String connectionGet(URL url) {
         try {
             //Sets the connection.
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -121,9 +120,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
             //Returns string response from the server.
             return response.toString();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //Catches exceptions and displays them in the Log.
             Log.e(TAG, "Exception:", e);
         }
@@ -159,7 +156,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object regData, and returning the response.
-                    JSONObject jsonRegReturn = new JSONObject(connectionPost(url,regData));
+                    JSONObject jsonRegReturn = new JSONObject(connectionPost(url, regData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnRegValues = new BackgroundTasksResults();
@@ -167,7 +164,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnRegValues.serverResponse = jsonRegReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "RegisterActivity server response: "+returnRegValues.serverResponse);
+                    Log.i(TAG, "RegisterActivity server response: " + returnRegValues.serverResponse);
 
                     return returnRegValues;
                 } catch (Exception e) {
@@ -178,12 +175,11 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "register";
                     preventCrash.serverResponse = "conErr";
-                    return  preventCrash;
+                    return preventCrash;
                 }
 
             case "login":
-                try
-                {
+                try {
                     //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
                     publishProgress("login");
 
@@ -200,7 +196,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object loginData, and returning the response.
-                    JSONObject jsonLoginReturn = new JSONObject(connectionPost(url,loginData));
+                    JSONObject jsonLoginReturn = new JSONObject(connectionPost(url, loginData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector, loggedInUser and server response).
                     BackgroundTasksResults returnLoginValues = new BackgroundTasksResults();
@@ -209,12 +205,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnLoginValues.serverResponse = jsonLoginReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "LoginActivity server response: "+returnLoginValues.serverResponse);
+                    Log.i(TAG, "LoginActivity server response: " + returnLoginValues.serverResponse);
 
                     return returnLoginValues;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Login exception: ", e);
 
@@ -222,7 +216,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "login";
                     preventCrash.serverResponse = "conErr";
-                    return  preventCrash;
+                    return preventCrash;
                 }
 
             case "addpost":
@@ -244,7 +238,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object postData, and returning the response.
-                    JSONObject jsonNewPostReturn = new JSONObject(connectionPost(url,postData));
+                    JSONObject jsonNewPostReturn = new JSONObject(connectionPost(url, postData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnAddPostValues = new BackgroundTasksResults();
@@ -252,12 +246,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnAddPostValues.serverResponse = jsonNewPostReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "Add post server response: "+returnAddPostValues.serverResponse);
+                    Log.i(TAG, "Add post server response: " + returnAddPostValues.serverResponse);
 
                     return returnAddPostValues;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
 
@@ -265,7 +257,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "addpost";
                     preventCrash.serverResponse = "conErr";
-                    return  preventCrash;
+                    return preventCrash;
                 }
 
             case "checkcon":
@@ -289,12 +281,10 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnCheckConValues.serverResponse = jsonNewPostReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "Check connection server response: "+returnCheckConValues.serverResponse);
+                    Log.i(TAG, "Check connection server response: " + returnCheckConValues.serverResponse);
 
                     return returnCheckConValues;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
 
@@ -302,12 +292,11 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "checkcon";
                     preventCrash.serverResponse = "conErr";
-                    return  preventCrash;
+                    return preventCrash;
                 }
 
             case "logout":
-                try
-                {
+                try {
                     //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
                     publishProgress("logout");
 
@@ -330,16 +319,13 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnLogoutValues.selectorResult = "logout";
 
                     return returnLogoutValues;
-            }
-            catch (Exception e)
-            {
-                //Catches exceptions and displays them in the Log.
-                Log.e(TAG, "Exception:", e);
-            }
+                } catch (Exception e) {
+                    //Catches exceptions and displays them in the Log.
+                    Log.e(TAG, "Exception:", e);
+                }
 
             case "loadposts":
-                try
-                {
+                try {
                     //Sends a string "loadposts" to the onProgressUpdate method to display the correct progress message.
                     publishProgress("loadposts");
 
@@ -364,26 +350,22 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     /*If any posts have been gathered and stored in the json array, then they are stored in a temporary object
                       and added to an arraylist to be passed to the onPostExecute method and dispayed in the listview.*/
-                    if (posts.length() > 0)
-                    {
+                    if (posts.length() > 0) {
                         for (int i = 0; i < posts.length(); i++) {
                             JSONObject tempJson = new JSONObject((posts.getString(i)));
-                            Posts tempPost = new Posts(tempJson.get("post_num").toString(),tempJson.get("post_title").toString(),tempJson.get("post_desc").toString(),tempJson.get("post_user").toString());
+                            Posts tempPost = new Posts(tempJson.get("post_num").toString(), tempJson.get("post_title").toString(), tempJson.get("post_desc").toString(), tempJson.get("post_user").toString());
                             returnLoadPostsValues.data.add(tempPost);
                         }
                         //Sets the server response to the message sent along with the array of posts.
                         returnLoadPostsValues.serverResponse = result.getString("message");
                     }
                     //If no posts exist then the server response sent to onPostExecute is noposts, so the correct toast can be displayed.
-                    else
-                    {
+                    else {
                         returnLoadPostsValues.serverResponse = "noposts";
                     }
 
                     return returnLoadPostsValues;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
 
@@ -391,7 +373,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "loadposts";
                     preventCrash.serverResponse = "conErr";
-                    return  preventCrash;
+                    return preventCrash;
                 }
 
             case "deletepost":
@@ -412,7 +394,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server, sending JSON Object postData, and returning the response.
-                    JSONObject jsonDeletePostReturn = new JSONObject(connectionPost(url,postData));
+                    JSONObject jsonDeletePostReturn = new JSONObject(connectionPost(url, postData));
 
                     //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
                     BackgroundTasksResults returnDeletePostValues = new BackgroundTasksResults();
@@ -420,56 +402,41 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     returnDeletePostValues.serverResponse = jsonDeletePostReturn.getString("message");
 
                     //Log server response
-                    Log.i(TAG, "Delete post server response: "+returnDeletePostValues.serverResponse);
+                    Log.i(TAG, "Delete post server response: " + returnDeletePostValues.serverResponse);
 
                     return returnDeletePostValues;
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Catches exceptions and displays them in the Log.
                     Log.e(TAG, "Exception:", e);
 
                     //To prevent app from crashing, set the return results to direct to an error message.
                     BackgroundTasksResults preventCrash = new BackgroundTasksResults();
                     preventCrash.selectorResult = "deletepost";
-        preventCrash.serverResponse = "conErr";
-        return  preventCrash;
-    }
-}
-return null;
+                    preventCrash.serverResponse = "conErr";
+                    return preventCrash;
+                }
         }
+        return null;
+    }
 
-//Depending on the function executed, the correct progress dialog is set and displayed.
-@Override
-protected void onProgressUpdate(String... progress) {
+    //Depending on the function executed, the correct progress dialog is set and displayed.
+    @Override
+    protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
 
-        if (progress[0].equals("login"))
-        {
+        if (progress[0].equals("login")) {
             progressDialog.setMessage("Attempting login...");
-        }
-        else if (progress[0].equals("register"))
-        {
+        } else if (progress[0].equals("register")) {
             progressDialog.setMessage("Attempting to register...");
-        }
-        else if (progress[0].equals("posting"))
-        {
+        } else if (progress[0].equals("posting")) {
             progressDialog.setMessage("Adding new post...");
-        }
-        else if (progress[0].equals("checkcon"))
-        {
+        } else if (progress[0].equals("checkcon")) {
             progressDialog.setMessage("Checking connection...");
-        }
-        else if (progress[0].equals("logout"))
-        {
+        } else if (progress[0].equals("logout")) {
             progressDialog.setMessage("Logging out...");
-        }
-        else if (progress[0].equals("loadposts"))
-        {
+        } else if (progress[0].equals("loadposts")) {
             progressDialog.setMessage("Loading posts...");
-        }
-        else if (progress[0].equals("deletepost"))
-        {
+        } else if (progress[0].equals("deletepost")) {
             progressDialog.setMessage("Deleting post...");
         }
         progressDialog.show();
@@ -482,35 +449,26 @@ protected void onProgressUpdate(String... progress) {
 
         /*Depending on the selector result sent from the executed background task, the corresponding case is executed.
           The majority display toasts to let the user know the outcome depending on the response from the server.*/
-        switch (result.selectorResult)
-        {
+        switch (result.selectorResult) {
             case "register":
-                if (result.serverResponse.equals("success"))
-                {
+                if (result.serverResponse.equals("success")) {
                     //This returns the user to the login screen on success and displays a toast saying successfully registered.
-                    Intent i = new Intent (ctx, LoginActivity.class);
+                    Intent i = new Intent(ctx, LoginActivity.class);
                     ctx.startActivity(i);
-                    ((Activity)ctx).finish();
+                    ((Activity) ctx).finish();
 
                     Toast.makeText(ctx, "Successfully registered!", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("exists"))
-                {
+                } else if (result.serverResponse.equals("exists")) {
                     Toast.makeText(ctx, "Username exists, please enter a new one.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("failure"))
-                {
+                } else if (result.serverResponse.equals("failure")) {
                     Toast.makeText(ctx, "Unexpected failure posting to database.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to register.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case "login":
-                if (result.serverResponse.equals("authenticated"))
-                {
+                if (result.serverResponse.equals("authenticated")) {
                     Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
 
                     //Adds the logged in user string to the active_user shared preferences and commits it.
@@ -520,37 +478,26 @@ protected void onProgressUpdate(String... progress) {
                     editor.commit();
 
                     //If the user is correctly authenticated, load the Dashboard activity.
-                    Intent loggedIn = new Intent (ctx, DashboardActivity.class);
+                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
                     ctx.startActivity(loggedIn);
-                    ((Activity)ctx).finish();
+                    ((Activity) ctx).finish();
 
-                }
-                else if (result.serverResponse.equals("notexists"))
-                {
+                } else if (result.serverResponse.equals("notexists")) {
                     Toast.makeText(ctx, "User does not exist.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("wrongpass"))
-                {
+                } else if (result.serverResponse.equals("wrongpass")) {
                     Toast.makeText(ctx, "Incorrect password, please try again.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to login.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case "addpost":
-                if (result.serverResponse.equals("success"))
-                {
+                if (result.serverResponse.equals("success")) {
                     Toast.makeText(ctx, "Posted to database.", Toast.LENGTH_LONG).show();
                     activity.finish();
-                }
-                else if (result.serverResponse.equals("failure"))
-                {
+                } else if (result.serverResponse.equals("failure")) {
                     Toast.makeText(ctx, "Unexpected failure posting to database.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to add post.", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -562,9 +509,7 @@ protected void onProgressUpdate(String... progress) {
                     Intent loggedIn = new Intent(ctx, DashboardActivity.class);
                     ctx.startActivity(loggedIn);
                     ((Activity) ctx).finish();
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                } else if (result.serverResponse.equals("conErr")) {
                     /*If there is a connection issue, the "active_user" shared preference is removed
                       (technically logging the user out) and a toast is displayed.*/
                     SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
@@ -589,30 +534,24 @@ protected void onProgressUpdate(String... progress) {
 
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
-                    //Creates a list adapter using the custom class PostsAdapter and adds the array list of data to it.
+                    //Runs the interface method to send the loaded list of posts to DashboardActivity.
+                    onAsyncResult.onResultSuccess(result.data);
 
-                    PostsAdapter tempposts = new PostsAdapter(activity,null);
-
-                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, tempposts.filterList(result.data));
-                    //Declares the listview to display data in.
+                    //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
+                    PostsFilter filter = new PostsFilter(ctx, activity);
+                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, filter.filter(result.data));
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
-
-                    //Sets the listview's adapter to the one created above, containing the array list of data. This displays the data.
                     dashboardList.setAdapter(dashboardListAdapter);
 
                     //Stored current date and time in a string.
                     String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
                     //Updated a textview in the dashboard activity with the date and time this was last executed.
-                    TextView lastUpdatedText = (TextView)activity.findViewById(R.id.lastUpdated);
+                    TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
                     lastUpdatedText.setText(mydate);
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to load posts.", Toast.LENGTH_LONG).show();
-                }
-                else if (result.serverResponse.equals("noposts"))
-                {
+                } else if (result.serverResponse.equals("noposts")) {
                     Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -621,16 +560,16 @@ protected void onProgressUpdate(String... progress) {
                 if (result.serverResponse.equals("success")) {
                     Toast.makeText(ctx, "Successfully deleted.", Toast.LENGTH_LONG).show();
                     //If the deletion is successful, a new asynctask is loaded, loading the posts again.
-                    new BackgroundTasks(ctx,activity).execute("loadposts",null,null,null,null,null);
-                }
-                else if (result.serverResponse.equals("conErr"))
-                {
+                    //new BackgroundTasks(ctx,activity).execute("loadposts",null,null,null,null,null);
+                } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to delete post.", Toast.LENGTH_LONG).show();
                 }
 
                 break;
         }
     }
+
+
 }
 
 

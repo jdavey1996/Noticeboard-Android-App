@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:text="Refresh"
         android:id="@+id/refreshBtn"
-        android:onClick="refreshPosts"
+        android:onClick="loadPosts"
         android:layout_below="@+id/logoutBtn"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
