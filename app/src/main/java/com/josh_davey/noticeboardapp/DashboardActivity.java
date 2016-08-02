@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -18,8 +19,13 @@ import java.util.ArrayList;
 public class DashboardActivity extends AppCompatActivity {
     //Defines a string to hold the logged in user.
     public String user;
+
+    //Gets the context and activity.
     Context ctx = this;
     Activity activity = this;
+
+    //Defines the sqipe refresh layout for use across the activity.
+    SwipeRefreshLayout srefresh;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,16 @@ public class DashboardActivity extends AppCompatActivity {
 
         //Sets the TextView to the logged in user, passed through shared preferences.
         displayUser.setText(user);
+
+        //Loads the posts when a swipe gesture is completed vertically along the listview.
+        srefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        srefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                          @Override
+                                          public void onRefresh() {
+                                              loadPosts(null);
+                                          }
+                                      }
+        );
     }
 
     @Override
@@ -48,9 +64,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     //Receives data from the asynctask, being the list of posts whenever it gets refreshed.
-    BackgroundTasks.OnAsyncResult onAsyncResult = new BackgroundTasks.OnAsyncResult() {
+    BackgroundTasks.PostsListInterface postsListListener = new BackgroundTasks.PostsListInterface() {
         @Override
-        public void onResultSuccess(final ArrayList<Posts> listFromAsync) {
+        public void getListFromAsync(final ArrayList<Posts> listFromAsync) {
             //Initialises the switch to select all or just the users posts. Then initialises a listener for if the checked state changed.
             Switch sw = (Switch) findViewById(R.id.postsViewSelect);
             sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -70,8 +86,11 @@ public class DashboardActivity extends AppCompatActivity {
     public void loadPosts(View view) {
         //Refreshes the list of posts and set the listener for the results returned from asynctask.
         BackgroundTasks refreshPostsBtn = new BackgroundTasks(this, this);
-        refreshPostsBtn.setOnResultListener(onAsyncResult);
+        refreshPostsBtn.setOnResultListener(postsListListener);
         refreshPostsBtn.execute("loadposts", null, null, null, null, null);
+
+        //Cancels swipe refresh when posts are loaded.
+        srefresh.setRefreshing(false);
     }
 
     public void addPostActivity(View view) {

@@ -40,15 +40,15 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     private static final String TAG = "BackgroundTasks";
 
     //Set up interface and methods the access the data sent from this asynctask, the list of posts..
-    public interface OnAsyncResult {
-        public abstract void onResultSuccess(final ArrayList<Posts> listFromAsync);
+    public interface PostsListInterface {
+        public abstract void getListFromAsync(final ArrayList<Posts> listFromAsync);
     }
 
-    OnAsyncResult onAsyncResult;
+    PostsListInterface postsListInterface;
 
-    public void setOnResultListener(OnAsyncResult onAsyncResult) {
-        if (onAsyncResult != null) {
-            this.onAsyncResult = onAsyncResult;
+    public void setOnResultListener(PostsListInterface postsListInterface) {
+        if (postsListInterface != null) {
+            this.postsListInterface = postsListInterface;
         }
     }
 
@@ -553,7 +553,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             case "loadposts":
                 if (result.serverResponse.equals("success")) {
                     //Runs the interface method to send the loaded list of posts to DashboardActivity.
-                    onAsyncResult.onResultSuccess(result.data);
+                    postsListInterface.getListFromAsync(result.data);
 
                     //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
                     PostsFilter filter = new PostsFilter(ctx, activity);
