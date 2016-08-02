@@ -14,9 +14,9 @@ if(!$con){
     $response["message"] = "conErr";
 }
 else{
-	$checkUser = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."'");
+	$checkUser = mysqli_query($con,"SELECT * FROM tblUsers WHERE BINARY user_username = '".$username."'");
 	if (mysqli_num_rows($checkUser) > 0) {
-		$login = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."' AND user_password = '".$password."'");
+		$login = mysqli_query($con,"SELECT * FROM tblUsers WHERE BINARY user_username = '".$username."' AND BINARY user_password = '".$password."'");
 		if (mysqli_num_rows($login) > 0) {
 		
 			$response["message"] = "authenticated";

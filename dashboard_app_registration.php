@@ -14,7 +14,7 @@ if(!$con){
     $response["message"] = "conErr";
 }
 else{
-	$checkExists = mysqli_query($con,"SELECT * FROM tblUsers WHERE user_username = '".$username."'");
+	$checkExists = mysqli_query($con,"SELECT * FROM tblUsers WHERE BINARY user_username = '".$username."'");
   	if (mysqli_num_rows($checkExists) > 0) {
 		$response["message"] = "exists";
 	}

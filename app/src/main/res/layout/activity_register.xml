@@ -42,7 +42,8 @@
             android:textColorHint="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
         <EditText
             android:id="@+id/regPassword"
@@ -59,7 +60,8 @@
             android:textColorHint="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
         <Button
             android:id="@+id/submitRegBtn"

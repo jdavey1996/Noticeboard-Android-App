@@ -27,7 +27,8 @@
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
         <EditText
             android:id="@+id/loginPassword"
@@ -43,7 +44,8 @@
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
         <Button
             android:id="@+id/submitLoginBtn"
