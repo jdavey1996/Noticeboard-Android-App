@@ -165,7 +165,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_registration.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_registration.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject regData = new JSONObject();
@@ -205,7 +205,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_login.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_login.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject loginData = new JSONObject();
@@ -246,7 +246,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_addpost.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_addpost.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject postData = new JSONObject();
@@ -287,7 +287,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that the app is requesting data from.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_checkcon.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_checkcon.php");
 
                     //Creates a json object and adds the string response from the server to it.
                     //This also runs the connection method, connecting to the server and getting the response.
@@ -351,7 +351,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that the app is requesting data from.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_loadposts.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_loadposts.php");
 
                     //Stores the results on running the connectionGet method in a JSON object. Containing all received data.
                     JSONObject result = new JSONObject(connectionGet(url));
@@ -403,7 +403,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/androidapp/dashboard_app_deletepost.php");
+                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_deletepost.php");
 
                     //Creates a json object, converts post number to integer and stores data within the object ready to be sent.
                     JSONObject postData = new JSONObject();
