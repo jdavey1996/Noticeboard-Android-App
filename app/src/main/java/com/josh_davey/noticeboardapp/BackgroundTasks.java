@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksResults> {
-    //Constuctor method to get the context from classes using this AsyncTask Class.
+    //Variables.
     Context ctx;
     Activity activity;
+    ProgressDialog progressDialog;
 
+    //Constuctor method to get the context and activity from classes using this AsyncTask Class.
     public BackgroundTasks(Context ctx, Activity activity) {
         this.ctx = ctx;
         this.activity = activity;
@@ -39,7 +41,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     //Tag for this class, used for logcat.
     private static final String TAG = "BackgroundTasks";
 
-    //Set up interface and methods the access the data sent from this asynctask, the list of posts..
+    //Set up interface and methods to access the data sent from this asynctask, the list of posts.
     public interface PostsListInterface {
         public abstract void getListFromAsync(final ArrayList<Posts> listFromAsync);
     }
@@ -64,9 +66,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             this.ifdeleted = ifdeleted;
         }
     }
-
-    //Creates variable for the progress bar that can be accessed by all methods within the class.
-    ProgressDialog progressDialog;
 
     @Override
     protected void onPreExecute() {
@@ -165,7 +164,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_registration.php");
+                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_registration.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject regData = new JSONObject();
@@ -205,7 +204,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_login.php");
+                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_login.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject loginData = new JSONObject();
@@ -246,7 +245,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_addpost.php");
+                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_addpost.php");
 
                     //Creates a json object and stores data within it ready to be sent.
                     JSONObject postData = new JSONObject();
@@ -277,42 +276,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     preventCrash.serverResponse = "conErr";
                     return preventCrash;
                 }
-
-            case "checkcon":
-                try {
-                    //Sends a string "checkcon" to the onProgressUpdate method to display the correct progress message.
-                    publishProgress("checkcon");
-
-                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
-
-                    //Sets the URL of the PHP script that the app is requesting data from.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_checkcon.php");
-
-                    //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server and getting the response.
-                    JSONObject jsonNewPostReturn = new JSONObject(connectionGet(url));
-
-                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
-                    BackgroundTasksResults returnCheckConValues = new BackgroundTasksResults();
-                    returnCheckConValues.selectorResult = "checkcon";
-                    returnCheckConValues.serverResponse = jsonNewPostReturn.getString("message");
-
-                    //Log server response
-                    Log.i(TAG, "Check connection server response: " + returnCheckConValues.serverResponse);
-
-                    return returnCheckConValues;
-                } catch (Exception e) {
-                    //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Exception:", e);
-
-                    //To prevent app from crashing, set the return results to direct to an error message.
-                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
-                    preventCrash.selectorResult = "checkcon";
-                    preventCrash.serverResponse = "conErr";
-                    return preventCrash;
-                }
-
             case "logout":
                 try {
                     //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
@@ -351,7 +314,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that the app is requesting data from.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_loadposts.php");
+                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_loadposts.php");
 
                     //Stores the results on running the connectionGet method in a JSON object. Containing all received data.
                     JSONObject result = new JSONObject(connectionGet(url));
@@ -403,7 +366,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Thread.sleep(3000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/dashboard_app_data/dashboard_app_deletepost.php");
+                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_deletepost.php");
 
                     //Creates a json object, converts post number to integer and stores data within the object ready to be sent.
                     JSONObject postData = new JSONObject();
@@ -441,15 +404,12 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     @Override
     protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
-
         if (progress[0].equals("login")) {
             progressDialog.setMessage("Attempting login...");
         } else if (progress[0].equals("register")) {
             progressDialog.setMessage("Attempting to register...");
         } else if (progress[0].equals("posting")) {
             progressDialog.setMessage("Adding new post...");
-        } else if (progress[0].equals("checkcon")) {
-            progressDialog.setMessage("Checking connection...");
         } else if (progress[0].equals("logout")) {
             progressDialog.setMessage("Logging out...");
         } else if (progress[0].equals("loadposts")) {
@@ -520,25 +480,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 }
                 break;
 
-            case "checkcon":
-                if (result.serverResponse.equals("connected")) {
-                    /*If the connection can be established the user is logged in by starting the Dashboard activity as the "active_user" shared
-                      preference still exists. This will exist until it's removed when the user logs out.*/
-                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
-                    ctx.startActivity(loggedIn);
-                    ((Activity) ctx).finish();
-                } else if (result.serverResponse.equals("conErr")) {
-                    /*If there is a connection issue, the "active_user" shared preference is removed
-                      (technically logging the user out) and a toast is displayed.*/
-                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.remove("LoggedInUser");
-                    editor.commit();
-
-                    Toast.makeText(ctx, "Connection error. Your session has expired.", Toast.LENGTH_LONG).show();
-                }
-                break;
-
             case "logout":
                 //Loads the login activity after logging the user out.
                 Intent logout = new Intent(ctx, LoginActivity.class);
@@ -568,9 +509,19 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
                     lastUpdatedText.setText(mydate);
                 } else if (result.serverResponse.equals("conErr")) {
-                    Toast.makeText(ctx, "Connection error. Unable to load posts.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, "Connection error. Unable to load posts. You're viewing historic data.", Toast.LENGTH_LONG).show();
                 } else if (result.serverResponse.equals("noposts")) {
                     Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
+                    final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
+                    //Clear list.
+                    dashboardList.setAdapter(null);
+
+                    //Stored current date and time in a string.
+                    String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
+                    //Updated a textview in the dashboard activity with the date and time this was last executed.
+                    TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
+                    lastUpdatedText.setText(mydate);
                 }
                 break;
 

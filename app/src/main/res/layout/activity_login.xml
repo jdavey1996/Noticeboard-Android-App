@@ -3,22 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#282828"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:id="@+id/loginLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Login:"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/loginUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="#5d5d5d"
             android:hint="Username"
             android:singleLine="true"
@@ -26,7 +39,7 @@
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
-            android:textSize="20sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
@@ -43,36 +56,36 @@
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="#ffffff"
-            android:textSize="20sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
 
         <Button
             android:id="@+id/submitLoginBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
             android:background="#e95a44"
             android:padding="10dp"
             android:text="Login"
             android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="14sp"
             android:onClick="login" />
 
-        <Button
-            android:id="@+id/regActivityBtn"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#e95a44"
-            android:onClick="startRegister"
-            android:padding="10dp"
-            android:text="Register"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:padding="4dp"
+            android:layout_gravity="center"
+            android:text="No account? Click here to register"
+            android:id="@+id/regActivityBtn"
+            android:layout_below="@+id/submitLoginBtn"
+            android:onClick="startRegister" />
     </LinearLayout>
+
+
 
 
 </RelativeLayout>

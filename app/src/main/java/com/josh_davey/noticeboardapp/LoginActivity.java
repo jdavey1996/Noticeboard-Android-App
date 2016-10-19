@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
-    //Class Variables.
+    //Variables.
     EditText txtLoginUsername, txtLoginPassword;
     String LoginUsername, LoginPassword;
 
@@ -16,22 +16,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Loads shared preferences.
-        SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        String user = pref.getString("LoggedInUser", "DEFAULT");
-
-        //Runs commands if there is a username still stored in the LoggedInUser shared preference.
-        if ((!(user).equals("DEFAULT"))) {
-            //Runs the checkconnection section of the async task which then logs the user in again if it succeeds.
-            BackgroundTasks checkCon = new BackgroundTasks(this, null);
-            checkCon.execute("checkcon", null, null, null, null, null);
-        }
     }
 
     //Method to open the register activity.
