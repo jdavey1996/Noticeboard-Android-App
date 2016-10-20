@@ -31,15 +31,11 @@ public class RegisterActivity extends Activity {
         txtRegPassword = (EditText) findViewById(R.id.regPassword);
 
         //Converts text inputs to string and stores them in string variables.
-        RegUsername = txtRegUsername.getText().toString();
+        RegUsername = txtRegUsername.getText().toString().toLowerCase();
         RegPassword = txtRegPassword.getText().toString();
 
         //If the inputs contain characters that aren't alphanumerical, a corresponding error toast is displayed.
-        if ((!RegUsername.matches("^[a-zA-Z0-9]*$")) || (!RegPassword.matches("^[a-zA-Z0-9]*$"))) {
-            Toast.makeText(RegisterActivity.this, "Inputs can only contain numbers and letters.", Toast.LENGTH_SHORT).show();
-        }
-        //If either input is empty, a corresponding error toast is displayed.
-        else if ((RegUsername.isEmpty()) || (RegPassword.isEmpty())) {
+        if ((RegUsername.isEmpty()) || (RegPassword.isEmpty())) {
             Toast.makeText(RegisterActivity.this, "Inputs cannot be left empty.", Toast.LENGTH_SHORT).show();
         }
         //If the inputs are too short, a corresponding error toast is displayed.

@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         txtLoginPassword = (EditText) findViewById(R.id.loginPassword);
 
         //Converts text inputs to string and stores them in string variables.
-        LoginUsername = txtLoginUsername.getText().toString();
+        LoginUsername = txtLoginUsername.getText().toString().toLowerCase();
         LoginPassword = txtLoginPassword.getText().toString();
 
         //The BackgroundTasks class is executed, using the two user input strings.
