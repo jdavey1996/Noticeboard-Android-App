@@ -7,12 +7,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -24,7 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
     Context ctx = this;
     Activity activity = this;
 
-    //Defines the sqipe refresh layout for use across the activity.
+    //Defines the swipe refresh layout for use across the activity.
     SwipeRefreshLayout srefresh;
 
     @Override
@@ -32,18 +35,15 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        //Defines TextView.
-        TextView displayUser;
-        displayUser = (TextView) findViewById(R.id.user);
-
-        //Loads shared preferences and an editor to edit the preferences.
+        //Gets logged-in user from shared preferences and displays it.
         SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-
-        //Gets the logged in user from shared preferences.
         user = pref.getString("LoggedInUser", "DEFAULT");
 
-        //Sets the TextView to the logged in user, passed through shared preferences.
-        displayUser.setText(user);
+        //Initialise toolbar, show the overflow menu and set the title.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.showOverflowMenu();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Welcome "+user);
 
         //Loads the posts when a swipe gesture is completed vertically along the listview.
         srefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
@@ -110,5 +110,31 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         logout(null);
+    }
+
+
+    //Inflate toolbar menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    //Adds functions to toobar buttons, eg logout.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.addPostBtn:
+                addPostActivity(null);
+                break;
+            case R.id.refreshBtn:
+                loadPosts(null);
+                break;
+            case R.id.logoutBtn:
+                logout(null);
+                break;
+        }
+        return true;
     }
 }

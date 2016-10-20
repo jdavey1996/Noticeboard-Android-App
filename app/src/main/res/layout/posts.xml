@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft= "10dp"
-    android:paddingRight= "10dp"
-    android:paddingTop = "5dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="2dp"
+    android:paddingBottom="6dp">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section1"
+    <TextView
+        android:id="@+id/postTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/postDesc"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:background="#4fa5d5" />
+        android:layout_below="@id/postTitle"
+        android:textColor="#333333"
+        android:textSize="12sp"
+        />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section2"
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/postUser"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:background="#ff0c04"
-        android:layout_gravity="center_horizontal" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/postTitle"
+        android:layout_marginEnd="5dp"
+        android:textSize="12sp"
+        android:textColor="#e95a44"
+        android:textStyle="bold"/>
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section3"
-        android:layout_width="fill_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="16sp"
-        android:background="#21a809"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete"
+        android:src="@drawable/ic_delete_black_18dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="5dip"
         android:id="@+id/deletePostBtn"
-        android:padding="8dp"
-        android:textSize="16sp"
-        android:layout_gravity="center_horizontal" />
+        android:layout_below="@id/postUser" />
 
-
-</LinearLayout>
+</RelativeLayout>

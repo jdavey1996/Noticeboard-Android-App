@@ -31,6 +31,9 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     Context ctx;
     Activity activity;
     ProgressDialog progressDialog;
+    String lastUpdated;
+
+
 
     //Constuctor method to get the context and activity from classes using this AsyncTask Class.
     public BackgroundTasks(Context ctx, Activity activity) {
@@ -73,6 +76,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
         progressDialog = new ProgressDialog(ctx, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
     }
 
     //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
@@ -152,7 +156,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         String title = params[3];
         String desc = params[4];
         String postNumToDelete = params[5];
-
 
         switch (selector) {
             case "register":
@@ -502,26 +505,22 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
                     dashboardList.setAdapter(dashboardListAdapter);
 
-                    //Stored current date and time in a string.
-                    String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-
-                    //Updated a textview in the dashboard activity with the date and time this was last executed.
+                    //Stored current date and time in a string and display.
+                    lastUpdated = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
                     TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
-                    lastUpdatedText.setText(mydate);
+                    lastUpdatedText.setText(lastUpdated);
+
                 } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to load posts. You're viewing historic data.", Toast.LENGTH_LONG).show();
                 } else if (result.serverResponse.equals("noposts")) {
                     Toast.makeText(ctx, "Currently no posts on the dashboard.", Toast.LENGTH_LONG).show();
+                    //Get and clear list.
                     final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
-                    //Clear list.
                     dashboardList.setAdapter(null);
-
-                    //Stored current date and time in a string.
-                    String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-
-                    //Updated a textview in the dashboard activity with the date and time this was last executed.
+                    //Stored current date and time in a string and display.
+                    lastUpdated = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
                     TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
-                    lastUpdatedText.setText(mydate);
+                    lastUpdatedText.setText(lastUpdated);
                 }
                 break;
 

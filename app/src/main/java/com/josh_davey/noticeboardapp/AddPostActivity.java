@@ -22,14 +22,7 @@ public class AddPostActivity extends Activity {
         Intent intent = getIntent();
         user = intent.getExtras().getString("LoggedInUser");
 
-        //Setting size of activity.
-        DisplayMetrics popupmetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(popupmetrics);
 
-        int width = popupmetrics.widthPixels;
-        int height = popupmetrics.heightPixels;
-
-        getWindow().setLayout((int)(width * .8), (int)(height * .6));
     }
 
     public void cancelNewPost(View view)

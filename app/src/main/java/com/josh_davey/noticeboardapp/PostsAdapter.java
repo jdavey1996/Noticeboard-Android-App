@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -37,9 +38,9 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
             convertView = taskInflater.inflate(R.layout.posts, parent, false);
         }
 
-        TextView taskTitle = (TextView) convertView.findViewById(R.id.section1);
-        TextView taskDesc = (TextView) convertView.findViewById(R.id.section2);
-        final TextView taskAuthor = (TextView) convertView.findViewById(R.id.section3);
+        TextView taskTitle = (TextView) convertView.findViewById(R.id.postTitle);
+        TextView taskDesc = (TextView) convertView.findViewById(R.id.postDesc);
+        final TextView taskAuthor = (TextView) convertView.findViewById(R.id.postUser);
 
         final Posts filtered = getItem(position);
 
@@ -50,7 +51,7 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
         final String postNumber = filtered.getPostNum();
 
         //If the logged in user matches the user of the post, a delete button is set to visible, else it is hidden.
-        final Button deletePostButton = (Button) convertView.findViewById(R.id.deletePostBtn);
+        final ImageView deletePostButton = (ImageView) convertView.findViewById(R.id.deletePostBtn);
         if (loggedInUser.equals(taskAuthor.getText().toString())) {
             deletePostButton.setVisibility(View.VISIBLE);
             deletePostButton.setOnClickListener(new View.OnClickListener() {
@@ -71,12 +72,6 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
                     };
 
                     deletePost.setIfdeleted(deleteItem);
-
-
-
-
-
-
                 }
             });
         } else {

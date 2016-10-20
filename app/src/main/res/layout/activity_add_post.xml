@@ -3,68 +3,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e95a44"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@color/colorPrimary">
 
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/cancelBtn"
-        android:onClick="cancelNewPost"
-        android:layout_below="@+id/addPostBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/postDesc"
-        android:layout_alignEnd="@+id/postDesc" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Post"
-        android:id="@+id/addPostBtn"
-        android:onClick="addNewPost"
-        android:layout_below="@+id/postDesc"
-        android:layout_alignRight="@+id/postDesc"
-        android:layout_alignEnd="@+id/postDesc"
-        android:layout_toEndOf="@+id/cancelBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/postTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="#5d5d5d"
-        android:hint="Title"
-        android:singleLine="true"
-        android:maxLength="12"
-        android:padding="10dp"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:id="@+id/addpostlayout1">
 
-    <EditText
-        android:id="@+id/postDesc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="#5d5d5d"
-        android:hint="Description"
-        android:maxLength="100"
-        android:padding="10dp"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/postTitle"
-        android:layout_centerHorizontal="true" />
+        <EditText
+            android:id="@+id/postTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#5d5d5d"
+            android:hint="Post Title"
+            android:singleLine="true"
+            android:maxLength="15"
+            android:padding="5dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:textSize="14sp"/>
 
+        <EditText
+            android:id="@+id/postDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#5d5d5d"
+            android:hint="Post Description"
+            android:lines="2"
+            android:maxLength="25"
+            android:padding="5dp"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:textSize="14sp" />
+
+        <LinearLayout android:id="@+id/addpostlayout2"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_marginTop="5dp" >
+
+            <Button
+                android:id="@+id/cancelPostBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:onClick="cancelNewPost"
+                android:text="Cancel"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:background="#e95a44"
+                android:layout_marginEnd="2.5dp" />
+
+            <Button
+                android:id="@+id/addPostBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="#e95a44"
+                android:onClick="addNewPost"
+                android:text="Submit"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:layout_marginStart="2.5dp" />
+
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
+
