@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddPostActivity extends Activity {
     //Class Variables.
@@ -41,8 +42,18 @@ public class AddPostActivity extends Activity {
         PostTitle = txtPostTitle.getText().toString();
         PostDesc = txtPostDesc.getText().toString();
 
-        //The BackgroundTasks class is executed to add a new post to the database.
-        BackgroundTasks addPost = new BackgroundTasks(this,this);
-        addPost.execute("addpost", user, null, PostTitle, PostDesc, null);
+        //If either input is empty, a corresponding error toast is displayed.
+        if ((PostTitle.isEmpty()) || (PostDesc.isEmpty())) {
+        Toast.makeText(this, "Inputs cannot be left empty.", Toast.LENGTH_SHORT).show();
+        }
+        //If the inputs are too short, a corresponding error toast is displayed.
+        else if ((PostTitle.length() < 5) || (PostDesc.length() < 10)) {
+        Toast.makeText(this, "Titles have to be a minimum of 5 characters and Descriptions 10 characters.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            //The BackgroundTasks class is executed to add a new post to the database.
+            BackgroundTasks addPost = new BackgroundTasks(this, this);
+            addPost.execute("addpost", user, null, PostTitle, PostDesc, null);
+        }
     }
 }
