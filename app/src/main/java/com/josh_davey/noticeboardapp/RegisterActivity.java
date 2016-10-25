@@ -19,9 +19,11 @@ public class RegisterActivity extends Activity {
         setContentView(R.layout.activity_register);
     }
 
-    //Method to open the main activity. Linked to cancel button.
+    //Method to open the main activity. Linked to cancel button. Clears backstack so it acts the same as the in device back button.
     public void cancelRegister(View view) {
-        startActivity(new Intent(this, LoginActivity.class));
+        Intent cancelReg = new Intent(this, LoginActivity.class);
+        cancelReg.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(cancelReg);
     }
 
     //Method to execute registering, using the class BackgroundTasks.

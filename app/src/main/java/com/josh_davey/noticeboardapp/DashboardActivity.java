@@ -121,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity {
         return true;
     }
 
-    //Adds functions to toobar buttons, eg logout.
+    //Adds functions to toolbar buttons, eg logout.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

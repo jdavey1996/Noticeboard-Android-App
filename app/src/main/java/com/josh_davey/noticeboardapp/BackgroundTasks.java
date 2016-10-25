@@ -3,6 +3,7 @@ package com.josh_davey.noticeboardapp;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -32,8 +33,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     Activity activity;
     ProgressDialog progressDialog;
     String lastUpdated;
-
-
 
     //Constuctor method to get the context and activity from classes using this AsyncTask Class.
     public BackgroundTasks(Context ctx, Activity activity) {
@@ -75,8 +74,21 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         super.onPreExecute();
         //Initialises the progress dialog to use the correct styles. This is then set in the onProgressUpdate method.
         progressDialog = new ProgressDialog(ctx, R.style.AppTheme_Dark_Dialog);
+        //Adds circle spinner, and non measurable progress.
         progressDialog.setIndeterminate(true);
+        //Prevent being cancelled by touching outside of dialog or by back button.
         progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        //Adds cancel button.
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Dismisses dialog
+                dialog.dismiss();
+                //Cancels async task
+                cancel(true);
+            }
+        });
     }
 
     //Method to establish connection, send data to server and return the response. This accepts a URL and JSON object containing data to send.
@@ -86,7 +98,8 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoOutput(true);
-
+            con.setConnectTimeout(10000);
+            con.setReadTimeout(10000);
             //Creates the output stream and buffered writer to write the string data to and send to the server.
             OutputStream oStream = con.getOutputStream();
             BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(oStream, "UTF-8"));
@@ -125,7 +138,9 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
             //Sets the connection.
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-
+            //Added timeouts to cater for extremely slow network connections.
+            con.setConnectTimeout(10000);
+            con.setReadTimeout(10000);
             //Gets response from the server. Reads inputstream and builds a string response.
             InputStream iStream = con.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
@@ -164,7 +179,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     publishProgress("register");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_registration.php");
@@ -204,7 +219,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     publishProgress("login");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_login.php");
@@ -245,7 +260,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     publishProgress("posting");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_addpost.php");
@@ -288,7 +303,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     Log.i(TAG, "Logging out user");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Loads shared preferences and an editor to edit the preferences.
                     SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
@@ -314,10 +329,11 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     publishProgress("loadposts");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Sets the URL of the PHP script that the app is requesting data from.
                     URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_loadposts.php");
+
 
                     //Stores the results on running the connectionGet method in a JSON object. Containing all received data.
                     JSONObject result = new JSONObject(connectionGet(url));
@@ -366,7 +382,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     publishProgress("deletepost");
 
                     //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
 
                     //Sets the URL of the PHP script that receives data from this AsyncTask.
                     URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_deletepost.php");
