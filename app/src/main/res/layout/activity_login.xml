@@ -15,74 +15,19 @@
         android:padding="10dp"
         android:id="@+id/loginLayout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login:"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/loginUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="#5d5d5d"
-            android:hint="Username"
-            android:singleLine="true"
-            android:maxLength="12"
-            android:padding="10dp"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"/>
 
-        <EditText
-            android:id="@+id/loginPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:inputType="textPassword"
-            android:background="#5d5d5d"
-            android:hint="Password"
-            android:singleLine="true"
-            android:maxLength="12"
-            android:padding="10dp"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#*%$£"/>
 
-        <Button
-            android:id="@+id/submitLoginBtn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:background="#e95a44"
-            android:padding="10dp"
-            android:text="Login"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:onClick="login" />
+    <com.google.android.gms.common.SignInButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sign_in_button"
+        android:onClick="signIn"
+        android:layout_gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorPrimary"
-            android:padding="4dp"
-            android:layout_gravity="center"
-            android:text="No account? Click here to register"
-            android:id="@+id/regActivityBtn"
-            android:layout_below="@+id/submitLoginBtn"
-            android:onClick="startRegister" />
+    </com.google.android.gms.common.SignInButton>
+
     </LinearLayout>
-
-
 
 
 </RelativeLayout>

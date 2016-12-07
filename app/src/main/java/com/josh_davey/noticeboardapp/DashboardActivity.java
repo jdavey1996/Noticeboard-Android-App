@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,12 +18,20 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiActivity;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
 import java.util.ArrayList;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     //Defines a string to hold the logged in user.
     public String user;
-
+    GoogleApiClient mGoogleApiClient;
     //Gets the context and activity.
     Context ctx = this;
     Activity activity = this;
@@ -35,9 +44,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        //Gets logged-in user from shared preferences and displays it.
-        SharedPreferences pref = getSharedPreferences("active_user", MODE_PRIVATE);
-        user = pref.getString("LoggedInUser", "DEFAULT");
+        mGoogleApiClient = ((Authentication) getApplication()).getGoogleApiClient(this, this);
 
         //Initialise toolbar, show the overflow menu and set the title.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -100,16 +107,38 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(addPost);
     }
 
-    public void logout(View view) {
-        //Calls and executes the logout section of the asynctask, clearing the shared preferences, logging the user out.
-        BackgroundTasks logout = new BackgroundTasks(this, null);
-        logout.execute("logout", null, null, null, null, null);
+
+    public void logout() {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Intent logout = new Intent(ctx, LoginActivity.class);
+                            logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            ctx.startActivity(logout);
+                            ((Activity) ctx).finish();
+                        }
+                    });
     }
+
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Intent logout = new Intent(ctx, LoginActivity.class);
+                        logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        ctx.startActivity(logout);
+                        ((Activity) ctx).finish();
+                    }
+                });
+    }
+
 
     //Overides the method that controls the system back button. This then calls the logout method.
     @Override
     public void onBackPressed() {
-        logout(null);
+        logout();
     }
 
 
@@ -132,9 +161,17 @@ public class DashboardActivity extends AppCompatActivity {
                 loadPosts(null);
                 break;
             case R.id.logoutBtn:
-                logout(null);
+                logout();
+                break;
+            case R.id.disconnectBtn:
+                revokeAccess();
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

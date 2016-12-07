@@ -19,4 +19,8 @@
         android:id="@+id/logoutBtn"
         android:title="Logout"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/disconnectBtn"
+        android:title="Disconnect"
+        app:showAsAction="never" />
 </menu>

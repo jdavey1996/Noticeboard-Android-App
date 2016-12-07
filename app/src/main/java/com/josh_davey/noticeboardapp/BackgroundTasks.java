@@ -173,87 +173,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         String postNumToDelete = params[5];
 
         switch (selector) {
-            case "register":
-                try {
-                    //Sends a string "register" to the onProgressUpdate method to display the correct progress message.
-                    publishProgress("register");
-
-                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(2000);
-
-                    //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_registration.php");
-
-                    //Creates a json object and stores data within it ready to be sent.
-                    JSONObject regData = new JSONObject();
-                    regData.put("username", user);
-                    regData.put("password", pass);
-
-                    //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending JSON Object regData, and returning the response.
-                    JSONObject jsonRegReturn = new JSONObject(connectionPost(url, regData));
-
-                    //Uses BackgroundTasksResults constructor to return multiple strings (selector and server response).
-                    BackgroundTasksResults returnRegValues = new BackgroundTasksResults();
-                    returnRegValues.selectorResult = "register";
-                    returnRegValues.serverResponse = jsonRegReturn.getString("message");
-
-                    //Log server response
-                    Log.i(TAG, "RegisterActivity server response: " + returnRegValues.serverResponse);
-
-                    return returnRegValues;
-                } catch (Exception e) {
-                    //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Register exception: ", e);
-
-                    //To prevent app from crashing, set the return results to direct to an error message.
-                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
-                    preventCrash.selectorResult = "register";
-                    preventCrash.serverResponse = "conErr";
-                    return preventCrash;
-                }
-
-            case "login":
-                try {
-                    //Sends a string "login" to the onProgressUpdate method to display the correct progress message.
-                    publishProgress("login");
-
-                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(2000);
-
-                    //Sets the URL of the PHP script that receives data from this AsyncTask.
-                    URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_login.php");
-
-                    //Creates a json object and stores data within it ready to be sent.
-                    JSONObject loginData = new JSONObject();
-                    loginData.put("username", user);
-                    loginData.put("password", pass);
-
-                    //Creates a json object and adds the string response from the server to it.
-                    //This also runs the connection method, connecting to the server, sending JSON Object loginData, and returning the response.
-                    JSONObject jsonLoginReturn = new JSONObject(connectionPost(url, loginData));
-
-                    //Uses BackgroundTasksResults constructor to return multiple strings (selector, loggedInUser and server response).
-                    BackgroundTasksResults returnLoginValues = new BackgroundTasksResults();
-                    returnLoginValues.selectorResult = "login";
-                    returnLoginValues.loggedInUser = user;
-                    returnLoginValues.serverResponse = jsonLoginReturn.getString("message");
-
-                    //Log server response
-                    Log.i(TAG, "LoginActivity server response: " + returnLoginValues.serverResponse);
-
-                    return returnLoginValues;
-                } catch (Exception e) {
-                    //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Login exception: ", e);
-
-                    //To prevent app from crashing, set the return results to direct to an error message.
-                    BackgroundTasksResults preventCrash = new BackgroundTasksResults();
-                    preventCrash.selectorResult = "login";
-                    preventCrash.serverResponse = "conErr";
-                    return preventCrash;
-                }
-
             case "addpost":
                 try {
                     //Sends a string "posting" to the onProgressUpdate method to display the correct progress message.
@@ -294,34 +213,7 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                     preventCrash.serverResponse = "conErr";
                     return preventCrash;
                 }
-            case "logout":
-                try {
-                    //Sends a string "logout" to the onProgressUpdate method to display the correct progress message.
-                    publishProgress("logout");
 
-                    //Log action.
-                    Log.i(TAG, "Logging out user");
-
-                    //Sleeps the thread to allow the message to be displayed regardless, for a short amount of time.
-                    Thread.sleep(2000);
-
-                    //Loads shared preferences and an editor to edit the preferences.
-                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-
-                    //Removes LoggedInUser shared preference before logging out.
-                    editor.remove("LoggedInUser");
-                    editor.commit();
-
-                    //Uses BackgroundTasksResults constructor to return strings (selector).
-                    BackgroundTasksResults returnLogoutValues = new BackgroundTasksResults();
-                    returnLogoutValues.selectorResult = "logout";
-
-                    return returnLogoutValues;
-                } catch (Exception e) {
-                    //Catches exceptions and displays them in the Log.
-                    Log.e(TAG, "Exception:", e);
-                }
 
             case "loadposts":
                 try {
@@ -423,14 +315,8 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
     @Override
     protected void onProgressUpdate(String... progress) {
         super.onProgressUpdate(progress);
-        if (progress[0].equals("login")) {
-            progressDialog.setMessage("Attempting login...");
-        } else if (progress[0].equals("register")) {
-            progressDialog.setMessage("Attempting to register...");
-        } else if (progress[0].equals("posting")) {
+        if (progress[0].equals("posting")) {
             progressDialog.setMessage("Adding new post...");
-        } else if (progress[0].equals("logout")) {
-            progressDialog.setMessage("Logging out...");
         } else if (progress[0].equals("loadposts")) {
             progressDialog.setMessage("Loading posts...");
         } else if (progress[0].equals("deletepost")) {
@@ -447,46 +333,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
         /*Depending on the selector result sent from the executed background task, the corresponding case is executed.
           The majority display toasts to let the user know the outcome depending on the response from the server.*/
         switch (result.selectorResult) {
-            case "register":
-                if (result.serverResponse.equals("success")) {
-                    //This returns the user to the login screen on success and displays a toast saying successfully registered.
-                    Intent i = new Intent(ctx, LoginActivity.class);
-                    ctx.startActivity(i);
-                    ((Activity) ctx).finish();
-
-                    Toast.makeText(ctx, "Successfully registered!", Toast.LENGTH_LONG).show();
-                } else if (result.serverResponse.equals("exists")) {
-                    Toast.makeText(ctx, "Username exists, please enter a new one.", Toast.LENGTH_LONG).show();
-                } else if (result.serverResponse.equals("failure")) {
-                    Toast.makeText(ctx, "Unexpected failure posting to database.", Toast.LENGTH_LONG).show();
-                } else if (result.serverResponse.equals("conErr")) {
-                    Toast.makeText(ctx, "Connection error. Unable to register.", Toast.LENGTH_LONG).show();
-                }
-                break;
-
-            case "login":
-                if (result.serverResponse.equals("authenticated")) {
-                    Toast.makeText(ctx, "Logged in.", Toast.LENGTH_LONG).show();
-
-                    //Adds the logged in user string to the active_user shared preferences and commits it.
-                    SharedPreferences pref = ctx.getSharedPreferences("active_user", ctx.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("LoggedInUser", result.loggedInUser);
-                    editor.commit();
-
-                    //If the user is correctly authenticated, load the Dashboard activity.
-                    Intent loggedIn = new Intent(ctx, DashboardActivity.class);
-                    ctx.startActivity(loggedIn);
-                    ((Activity) ctx).finish();
-
-                } else if (result.serverResponse.equals("notexists")) {
-                    Toast.makeText(ctx, "User does not exist.", Toast.LENGTH_LONG).show();
-                } else if (result.serverResponse.equals("wrongpass")) {
-                    Toast.makeText(ctx, "Incorrect password, please try again.", Toast.LENGTH_LONG).show();
-                } else if (result.serverResponse.equals("conErr")) {
-                    Toast.makeText(ctx, "Connection error. Unable to login.", Toast.LENGTH_LONG).show();
-                }
-                break;
 
             case "addpost":
                 if (result.serverResponse.equals("success")) {
@@ -497,17 +343,6 @@ public class BackgroundTasks extends AsyncTask<String, String, BackgroundTasksRe
                 } else if (result.serverResponse.equals("conErr")) {
                     Toast.makeText(ctx, "Connection error. Unable to add post.", Toast.LENGTH_LONG).show();
                 }
-                break;
-
-            case "logout":
-                //Loads the login activity after logging the user out.
-                Intent logout = new Intent(ctx, LoginActivity.class);
-                logout.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                ctx.startActivity(logout);
-                ((Activity) ctx).finish();
-
-                //Displays toast to say logged out.
-                Toast.makeText(ctx, "Logged out.", Toast.LENGTH_LONG).show();
                 break;
 
             case "loadposts":

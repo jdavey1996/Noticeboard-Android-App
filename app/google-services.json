@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "444258604329",
+    "project_id": "noticeboard-app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444258604329:android:0bd145a37ae016af",
+        "android_client_info": {
+          "package_name": "com.josh_davey.noticeboardapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "444258604329-i3knmadij9lusg00n3t3vrks8jlmfp26.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.josh_davey.noticeboardapp",
+            "certificate_hash": "A09D84B2EE008BB22B74DC6FA38F6CAEAD44585B"
+          }
+        },
+        {
+          "client_id": "444258604329-jh7nig6oje8e40l06id2bk07ru0cq1c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVP_crLHwQXGeQKuNYaf3kB8ZNTNFf9ss"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
