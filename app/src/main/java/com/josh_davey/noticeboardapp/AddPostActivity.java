@@ -2,28 +2,28 @@ package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class AddPostActivity extends Activity {
-    //Class Variables.
-    public String user;
-    EditText txtPostTitle, txtPostDesc;
-    String PostTitle, PostDesc;
+    //Variables.
+    String postTitle, postDesc, userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
+        //Sets activity size to wrap content.
+        getWindow().setLayout(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+
         //Gets the data (logged in user string) passed through the intent from the Dashboard activity.
         Intent intent = getIntent();
-        user = intent.getExtras().getString("LoggedInUser");
-
-
+        userId = intent.getExtras().getString("user_id");
     }
 
     public void cancelNewPost(View view)
@@ -34,26 +34,22 @@ public class AddPostActivity extends Activity {
 
     public void addNewPost(View view)
     {
-        //Sets the EditText variables equal to corresponding text inputs on the xml sheet.
-        txtPostTitle = (EditText) findViewById(R.id.postTitle);
-        txtPostDesc = (EditText) findViewById(R.id.postDesc);
-
-        //Converts text inputs to string and stores them in string variables.
-        PostTitle = txtPostTitle.getText().toString();
-        PostDesc = txtPostDesc.getText().toString();
+        //Gets value of text inputs and converts to string.
+        postTitle =((EditText) findViewById(R.id.postTitle)).getText().toString();
+        postDesc = ((EditText) findViewById(R.id.postDesc)).getText().toString();
 
         //If either input is empty, a corresponding error toast is displayed.
-        if ((PostTitle.isEmpty()) || (PostDesc.isEmpty())) {
+        if ((postTitle.isEmpty()) || (postDesc.isEmpty())) {
         Toast.makeText(this, "Inputs cannot be left empty.", Toast.LENGTH_SHORT).show();
         }
         //If the inputs are too short, a corresponding error toast is displayed.
-        else if ((PostTitle.length() < 5) || (PostDesc.length() < 10)) {
+        else if ((postTitle.length() < 5) || (postDesc.length() < 10)) {
         Toast.makeText(this, "Titles have to be a minimum of 5 characters and Descriptions 10 characters.", Toast.LENGTH_SHORT).show();
         }
+        //If no errors, run asynctask to attempt to post it.
         else {
-            //The BackgroundTasks class is executed to add a new post to the database.
-            BackgroundTasks addPost = new BackgroundTasks(this, this);
-            addPost.execute("addpost", user, null, PostTitle, PostDesc, null);
+            AddPostsAsync addPost = new AddPostsAsync(this,this);
+            addPost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,userId,postTitle,postDesc);
         }
     }
 }

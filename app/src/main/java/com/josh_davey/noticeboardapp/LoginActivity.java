@@ -1,19 +1,15 @@
 package com.josh_davey.noticeboardapp;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -24,8 +20,8 @@ import com.google.android.gms.common.api.ResultCallback;
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
 
     GoogleApiClient mGoogleApiClient;
-
-
+    Activity loginActivity = this;
+    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +37,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
@@ -57,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-                    Toast.makeText(LoginActivity.this, "test", Toast.LENGTH_SHORT).show();
                     hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
@@ -74,17 +69,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("test", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
 
+            //Load Dashboard activity, passing data about the logged in user, via the intent.
             Intent intent = new Intent(this,DashboardActivity.class);
-            intent.putExtra("name", acct.getDisplayName());
-            intent.putExtra("id", acct.getId());
+            intent.putExtra("user_forename", acct.getGivenName());
+            intent.putExtra("user_id", acct.getId());
             startActivity(intent);
-        } else {
-            // unable to sign in
 
+            //Finish this activity and all activities below it.
+            finishAffinity();
+        } else {
         }
     }
 
@@ -93,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         startActivityForResult(signInIntent, 9001);
     }
 
-    ProgressDialog mProgressDialog;
+
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -116,5 +112,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onClick(View v) {
         signIn();
     }
+
 }
 

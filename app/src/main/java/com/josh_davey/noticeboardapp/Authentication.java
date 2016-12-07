@@ -8,6 +8,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+/*Class that is ran at application level once app starts.
+  This builds what's needed for google sign on so login and logout can be achieved in separate activities*/
 public class Authentication extends Application {
     private GoogleApiClient mGoogleApiClient;
     private GoogleSignInOptions gso;
@@ -27,5 +29,4 @@ public class Authentication extends Application {
                 .build();
         return mGoogleApiClient;
     }
-
 }

@@ -1,34 +1,26 @@
 package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.util.Log;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class PostsAdapter extends ArrayAdapter<Posts> {
-
+    //Variables.
     Activity activity;
+    String loggedInUser;
 
-    public PostsAdapter(Activity activity, ArrayList<Posts> postList) {
+    public PostsAdapter(Activity activity, ArrayList<Posts> postList, String loggedInUser) {
         super(activity, 0, postList);
         this.activity = activity;
+        this.loggedInUser = loggedInUser;
     }
-
-    //Loads shared preferences and an editor & Gets the logged in user from shared preferences.
-    SharedPreferences pref = getContext().getSharedPreferences("active_user", getContext().MODE_PRIVATE);
-    final String loggedInUser = pref.getString("LoggedInUser", "DEFAULT");
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -38,40 +30,43 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
             convertView = taskInflater.inflate(R.layout.posts, parent, false);
         }
 
+        //Get current list item.
+        final Posts filtered = getItem(position);
+
+        //Set details for list item.
         TextView taskTitle = (TextView) convertView.findViewById(R.id.postTitle);
         TextView taskDesc = (TextView) convertView.findViewById(R.id.postDesc);
         final TextView taskAuthor = (TextView) convertView.findViewById(R.id.postUser);
-
-        final Posts filtered = getItem(position);
-
         taskTitle.setText(filtered.getPostTitle());
         taskDesc.setText(filtered.getPostDesc());
         taskAuthor.setText(filtered.getPostUser());
 
+        //Get post number.
         final String postNumber = filtered.getPostNum();
 
         //If the logged in user matches the user of the post, a delete button is set to visible, else it is hidden.
         final ImageView deletePostButton = (ImageView) convertView.findViewById(R.id.deletePostBtn);
-        if (loggedInUser.equals(taskAuthor.getText().toString())) {
+        if (loggedInUser.equals(filtered.getPostUser())) {
             deletePostButton.setVisibility(View.VISIBLE);
+            //OnClickListener for delete button. Runs asynctask to attempt to delete list item.
             deletePostButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Add delete post functionality.
-                    BackgroundTasks deletePost = new BackgroundTasks(getContext(), activity);
-                    deletePost.execute("deletepost", null, null, null, null, postNumber);
+                    //Run asynctask.
+                    RemovePostsAsync removePost = new RemovePostsAsync(getContext());
+                    removePost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,postNumber);
 
-                    BackgroundTasks.Ifdeleted deleteItem = new BackgroundTasks.Ifdeleted() {
+                    RemovePostsAsync.Ifdeleted deleteItem = new RemovePostsAsync.Ifdeleted() {
                         @Override
-                        public void successdeleted(final String deleted) {
-                            if (deleted.equals("deleted"))
+                        public void successdeleted(final Boolean deleted) {
+                            if (deleted)
                             {
                                 remove(getItem(position));
                             }
                         }
                     };
 
-                    deletePost.setIfdeleted(deleteItem);
+                    removePost.setIfdeleted(deleteItem);
                 }
             });
         } else {

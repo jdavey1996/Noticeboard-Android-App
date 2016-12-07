@@ -17,19 +17,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity" android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.OTHER" />
-            </intent-filter>
-        </activity>
-
         <activity android:name=".DashboardActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.OTHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddPostActivity" android:theme="@android:style/Theme.Holo.Dialog.NoActionBar">
+        <activity android:name=".AddPostActivity" android:theme="@style/AddPostsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.OTHER" />
             </intent-filter>
