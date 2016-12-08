@@ -3,10 +3,8 @@ package com.josh_davey.noticeboardapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,12 +16,9 @@ import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -33,7 +28,7 @@ import java.util.ArrayList;
 public class DashboardActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     //Variables.
     String userId;
-    GoogleApiClient mGoogleApiClient;
+    GoogleApiClient googleApiClient;
     SwipeRefreshLayout srefresh;
 
     //Gets the context and activity.
@@ -46,7 +41,7 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
         setContentView(R.layout.activity_dashboard);
 
         //Gets API clients from Authentication class.
-        mGoogleApiClient = ((Authentication) getApplication()).getGoogleApiClient(this, this);
+        googleApiClient = ((Authentication) getApplication()).getGoogleApiClient(this, this);
 
         //Initialise and set custom toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,18 +99,27 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
         srefresh.setRefreshing(false);
     }
 
-    //Starts the AddPostActivity, passing the username of the logged in user through the intent.
+    //Starts the AddPostActivity for result, passing the username of the logged in user through the intent.
     public void addPostActivity(View view) {
         Intent addPost = new Intent(this, AddPostActivity.class);
         addPost.putExtra("user_id", userId);
-        startActivity(addPost);
+        startActivityForResult(addPost,0);
     }
 
-
+    //Activity result of addPostActivity. If boolean result returned 'added' is true, post has been added successfully. Reload posts.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if(data.getBooleanExtra("added",false)) {
+                loadPosts(null);
+            }
+        }
+    }
 
     //Logs user out of app, logging their google credentials out and returning to login activity.
     public void logout() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
@@ -129,7 +133,7 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+        Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
@@ -178,7 +182,7 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 }

@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
 public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnObject> {
     //Variables.
     Context context;
@@ -46,12 +45,9 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
 
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
-        //Sets up progress dialog so it cannot be cancelled unless the cancel button is pressed.
-        progressDialog = new ProgressDialog(context, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
+         super.onPreExecute();
+        //Create progress dialog.
+        progressDialog = Progress.createProgressDialog(context,"Loading posts...");
         //Progress Dialog cancel button.
         progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -67,20 +63,22 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
     @Override
     protected GetPostsAsync.ReturnObject doInBackground(String... params) {
         String user = params[0];
-
         try{
             publishProgress();
             Thread.sleep(2000);
             URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_loadposts.php");
 
+            //Connect to url and get response data.
             Connection con = new Connection();
-
             JSONObject result = new JSONObject(con.connectionGet(url));
 
+            //Get array of posts from response data.
             JSONArray posts = result.getJSONArray("data");
 
+            //Create object to return
             GetPostsAsync.ReturnObject obj = new GetPostsAsync.ReturnObject();
 
+            //If posts array contains any data, add to arraylist in object to return.
             if (posts.length() > 0) {
                 for (int i = 0; i < posts.length(); i++) {
                     JSONObject tempJson = new JSONObject((posts.getString(i)));
@@ -88,9 +86,8 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
                     obj.data.add(tempPost);
                 }
             }
-
+            //Set user variable to return then return object.
             obj.user = user;
-            //MAYBE ADD RESPONSE CODES AND SHOW TOAST SPECIFICALLY.
             return obj;
 
         }catch (Exception e) {
@@ -101,14 +98,15 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        progressDialog.setMessage("Loading posts...");
         progressDialog.show();
     }
 
     @Override
     protected void onPostExecute(GetPostsAsync.ReturnObject result) {
-        progressDialog.dismiss();
+        //Hide progress dialog.
+        Progress.hideProgressDialog(progressDialog);
 
+        //If result is null, show error.
         if (result == null)
         {
             Toast.makeText(context, context.getResources().getString(R.string.async_error), Toast.LENGTH_SHORT).show();
@@ -118,24 +116,23 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
             //Runs the interface method to send the loaded list of posts to DashboardActivity.
             postsListInterface.getListFromAsync(result.data);
 
+            //Get listview.
+            final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
+
+            //If no posts were downloaded, set list to null, update timestamp and toast to user.
             if(result.data.size()==0)
             {
-                Toast.makeText(context,"No posts avilable.",Toast.LENGTH_SHORT).show();
-
-                //Get and clear list.
-                final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
                 dashboardList.setAdapter(null);
-
                 updateRefreshTimestamp();
+                Toast.makeText(context,"No posts avilable.",Toast.LENGTH_SHORT).show();
             }
+            //If posts were downloaded, run through filter and add to list. Then update timestamp.
             else
             {
                 //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
                 PostsFilter filter = new PostsFilter(context, activity,result.user);
                 final ListAdapter dashboardListAdapter = new PostsAdapter(activity, filter.filter(result.data),result.user);
-                final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
                 dashboardList.setAdapter(dashboardListAdapter);
-
                 updateRefreshTimestamp();
             }
         }

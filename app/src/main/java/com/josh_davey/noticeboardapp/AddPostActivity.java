@@ -18,6 +18,9 @@ public class AddPostActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
+        //Makes activity non cancellable when clicked outside window.
+        this.setFinishOnTouchOutside(false);
+
         //Sets activity size to wrap content.
         getWindow().setLayout(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
 
@@ -26,9 +29,12 @@ public class AddPostActivity extends Activity {
         userId = intent.getExtras().getString("user_id");
     }
 
+    //Method to return result to calling activity, returning false for boolean extra 'added', this means a post wasn't added to do not reload posts. Cancelling activity afterwards.
     public void cancelNewPost(View view)
     {
-        //Ends this activity when the cancel button is pressed.
+        Intent i = new Intent();
+        i.putExtra("added",false);
+        setResult(0,i);
         finish();
     }
 
@@ -51,5 +57,10 @@ public class AddPostActivity extends Activity {
             AddPostsAsync addPost = new AddPostsAsync(this,this);
             addPost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,userId,postTitle,postDesc);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+       cancelNewPost(null);
     }
 }

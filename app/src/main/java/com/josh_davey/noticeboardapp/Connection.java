@@ -13,7 +13,6 @@ import java.net.URL;
 
 //HTTP POST & GET Methods for communicating with external PHP scripts.
 public class Connection {
-
     protected String connectionPost(URL url, JSONObject data) {
         try {
             //Sets the connection.

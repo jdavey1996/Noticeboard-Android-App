@@ -37,11 +37,8 @@ public class RemovePostsAsync extends AsyncTask<String,String,String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //Sets up progress dialog so it cannot be cancelled unless the cancel button is pressed.
-        progressDialog = new ProgressDialog(context, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
+        //Create progress dialog.
+        progressDialog = Progress.createProgressDialog(context,"Deleting post...");
         //Progress Dialog cancel button.
         progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -62,12 +59,15 @@ public class RemovePostsAsync extends AsyncTask<String,String,String> {
            Thread.sleep(2000);
            URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_deletepost.php");
 
+           //Create object containing data to post to url.
            JSONObject postData = new JSONObject();
            postData.put("postNum", Integer.parseInt(postNumToDelete));
 
+           //Send data to url and add response to JSON object.
            Connection con = new Connection();
            JSONObject response = new JSONObject(con.connectionPost(url, postData));
 
+           //Return response from url.
            return  response.getString("message");
        }catch (Exception e)
        {
@@ -78,20 +78,22 @@ public class RemovePostsAsync extends AsyncTask<String,String,String> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        progressDialog.setMessage("Deleting post...");
         progressDialog.show();
     }
 
     @Override
     protected void onPostExecute(String result) {
-        progressDialog.dismiss();
+        //Hide progress dialog.
+        Progress.hideProgressDialog(progressDialog);
 
+        //If result is null, show error.
         if (result == null)
         {
             Toast.makeText(context, context.getResources().getString(R.string.async_error), Toast.LENGTH_SHORT).show();
         }
         else
         {
+            //Switch statement for responses from url.
             switch (result)
             {
                 case "success":
