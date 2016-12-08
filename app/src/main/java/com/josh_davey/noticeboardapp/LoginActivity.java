@@ -2,18 +2,12 @@ package com.josh_davey.noticeboardapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -22,10 +16,9 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
-
-    GoogleApiClient mGoogleApiClient;
-
-
+    //Variables.
+    GoogleApiClient googleApiClient;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,37 +27,51 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
-        mGoogleApiClient = ((Authentication) getApplication()).getGoogleApiClient(this, this);
+        //Get google api client from Authentication Application level class.
+        googleApiClient = ((Authentication) getApplication()).getGoogleApiClient(this, this);
 
+        //Sets size of google sign in button.
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        /*Checks if user is already signed in (SSO). If so, load application with their credentials.
+          If already done, load straight away, else show progress dialog and wait to be logged in.*/
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
         if (opr.isDone()) {
+            //Get saved result and return to handSignInResult method.
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
-            showProgressDialog();
+           //Show progress dialog.
+            progressDialog = Progress.createProgressDialog(this,"Loading...");
+            progressDialog.show();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-                    Toast.makeText(LoginActivity.this, "test", Toast.LENGTH_SHORT).show();
-                    hideProgressDialog();
+                    //Hide progress dialog.
+                    Progress.hideProgressDialog(progressDialog);
+                    //Return result to handSignInResult method.
                     handleSignInResult(googleSignInResult);
                 }
             });
         }
     }
+    //Method to start sign in activity for result.
+    public void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, 9001);
+    }
 
+    //Result when login button is pressed. Handle the result using handle method.
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 9001) {
@@ -73,48 +80,32 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
+    //Method to handle result from login data.
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("test", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
+            //Get sign in account details.
             GoogleSignInAccount acct = result.getSignInAccount();
 
+            //Load Dashboard activity, passing data about the logged in user, via the intent.
             Intent intent = new Intent(this,DashboardActivity.class);
-            intent.putExtra("name", acct.getDisplayName());
-            intent.putExtra("id", acct.getId());
+            intent.putExtra("user_forename", acct.getGivenName());
+            intent.putExtra("user_id", acct.getId());
             startActivity(intent);
+
+            //Finish this activity and all activities below it.
+            finishAffinity();
         } else {
-            // unable to sign in
-
-        }
-    }
-
-    public void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, 9001);
-    }
-
-    ProgressDialog mProgressDialog;
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-
         }
     }
 
     @Override
     public void onClick(View v) {
-        signIn();
+        //If sign in button clicked, sign in.
+        if(v.getId() == R.id.sign_in_button)
+        {
+            signIn();
+        }
     }
+
 }
 
