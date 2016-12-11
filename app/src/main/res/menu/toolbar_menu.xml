@@ -6,12 +6,6 @@
     tools:context=".DashboardActivity">
 
     <item
-        android:id="@+id/addPostBtn"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_add_white_24dp"
-        android:title="Add post"/>
-
-    <item
         android:id="@+id/refreshBtn"
         android:title="Refresh"
         app:showAsAction="never" />

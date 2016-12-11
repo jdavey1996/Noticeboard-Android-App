@@ -1,72 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    android:orientation="vertical">
-
+    android:fitsSystemWindows="true"
+    android:background="#E5E5E5">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#e95a44"
-        app:titleTextColor="@color/white">
-    </android.support.v7.widget.Toolbar>
+        app:titleTextColor="@color/white"/>
+    </android.support.design.widget.AppBarLayout>
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View your posts only"
-        android:id="@+id/postsViewSelect"
-        android:layout_marginLeft="10dp"
-        android:checked="false"
-        android:textColor="@color/colorPrimary"
-        android:layout_below="@+id/toolbar" />
 
-    <TextView
-        android:id="@+id/lastUpdatedTxt"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="Last updated: "
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/postsViewSelect" />
-
-    <TextView
-        android:id="@+id/lastUpdated"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        android:layout_toEndOf="@+id/lastUpdatedTxt"
-        android:layout_alignTop="@+id/lastUpdatedTxt" />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/swiperefresh"
-        android:layout_below="@+id/lastUpdatedTxt">
-
-        <ListView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/postsView"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:text="View your posts only"
+            android:id="@+id/postsViewSelect"
+            android:layout_marginLeft="10dp"
+            android:checked="false"
+            android:textColor="@color/colorPrimary"
+            />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:id="@+id/lastUpdatedTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Last updated: "
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_below="@+id/postsViewSelect" />
+
+        <TextView
+            android:id="@+id/lastUpdated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:layout_toEndOf="@+id/lastUpdatedTxt"
+            android:layout_alignTop="@+id/lastUpdatedTxt" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/swiperefresh"
+            android:layout_below="@+id/lastUpdatedTxt"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="428dp"
+                android:id="@+id/postsView"
+                android:background="#E5E5E5"
+                android:layout_alignParentStart="true"
+                android:paddingBottom="8dp"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="8dp"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addPostBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_24dp"
+        android:onClick="addPostActivity" />
+
+</android.support.design.widget.CoordinatorLayout>
+
+  <!--
 
 
 
 
-</RelativeLayout>
+
+
+    </RelativeLayout>-->
 

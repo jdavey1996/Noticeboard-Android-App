@@ -2,24 +2,39 @@ package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 
 import java.util.ArrayList;
 
+import static com.chauthai.swipereveallayout.R.id.right;
+
 public class PostsAdapter extends ArrayAdapter<Posts> {
+
     //Variables.
     Activity activity;
     String loggedInUser;
+    private final ViewBinderHelper binderHelper;
 
     public PostsAdapter(Activity activity, ArrayList<Posts> postList, String loggedInUser) {
         super(activity, 0, postList);
         this.activity = activity;
         this.loggedInUser = loggedInUser;
+
+        binderHelper = new ViewBinderHelper();
+        binderHelper.setOpenOnlyOne(true);
     }
 
     @Override
@@ -37,6 +52,7 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
         TextView taskTitle = (TextView) convertView.findViewById(R.id.postTitle);
         TextView taskDesc = (TextView) convertView.findViewById(R.id.postDesc);
         final TextView taskAuthor = (TextView) convertView.findViewById(R.id.postUser);
+
         taskTitle.setText(filtered.getPostTitle());
         taskDesc.setText(filtered.getPostDesc());
         taskAuthor.setText(filtered.getPostUser());
@@ -44,16 +60,24 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
         //Get post number.
         final String postNumber = filtered.getPostNum();
 
-        //If the logged in user matches the user of the post, a delete button is set to visible, else it is hidden.
-        final ImageView deletePostButton = (ImageView) convertView.findViewById(R.id.deletePostBtn);
+        //Get swipe layout.
+        SwipeRevealLayout swipeLayout = (SwipeRevealLayout) convertView.findViewById(R.id.swla);
+        //Bind swipe layout with binder parameters set previously.
+        binderHelper.bind(swipeLayout, filtered.getPostNum());
+
+
+        //If the logged in user matches the user of the post, a 'swipe left delete button' is visible, else it is hidden.
         if (loggedInUser.equals(filtered.getPostUser())) {
-            deletePostButton.setVisibility(View.VISIBLE);
+            //Unlock drag, allowing layout to be swiped out.
+            swipeLayout.setLockDrag(false);
+
             //OnClickListener for delete button. Runs asynctask to attempt to delete list item.
+            final FrameLayout deletePostButton = (FrameLayout) convertView.findViewById(R.id.deletePostBtn);
             deletePostButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Run asynctask.
-                    RemovePostsAsync removePost = new RemovePostsAsync(getContext());
+                  /*  RemovePostsAsync removePost = new RemovePostsAsync(getContext());
                     removePost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,postNumber);
 
                     RemovePostsAsync.Ifdeleted deleteItem = new RemovePostsAsync.Ifdeleted() {
@@ -66,14 +90,16 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
                         }
                     };
 
-                    removePost.setIfdeleted(deleteItem);
+                    removePost.setIfdeleted(deleteItem);*/
+                    Toast.makeText(activity, "DELETED", Toast.LENGTH_SHORT).show();
                 }
-            });
-        } else {
-            deletePostButton.setVisibility(View.GONE);
-        }
 
-        notifyDataSetChanged();
+            });
+        }
+        else {
+            //Lock drag on posts not owned by current user, preventing them from deleting them.
+            swipeLayout.setLockDrag(true);
+        }
 
         return convertView;
     }

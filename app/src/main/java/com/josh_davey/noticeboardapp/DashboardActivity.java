@@ -165,9 +165,6 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.addPostBtn:
-                addPostActivity(null);
-                break;
             case R.id.refreshBtn:
                 loadPosts(null);
                 break;
