@@ -2,24 +2,17 @@ package com.josh_davey.noticeboardapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 
 import java.util.ArrayList;
-
-import static com.chauthai.swipereveallayout.R.id.right;
 
 public class PostsAdapter extends ArrayAdapter<Posts> {
 
@@ -77,26 +70,23 @@ public class PostsAdapter extends ArrayAdapter<Posts> {
                 @Override
                 public void onClick(View v) {
                     //Run asynctask.
-                  /*  RemovePostsAsync removePost = new RemovePostsAsync(getContext());
-                    removePost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,postNumber);
+                    RemovePostsAsync removePost = new RemovePostsAsync(getContext());
+                    removePost.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, postNumber);
 
                     RemovePostsAsync.Ifdeleted deleteItem = new RemovePostsAsync.Ifdeleted() {
                         @Override
                         public void successdeleted(final Boolean deleted) {
-                            if (deleted)
-                            {
+                            if (deleted) {
                                 remove(getItem(position));
                             }
                         }
                     };
 
-                    removePost.setIfdeleted(deleteItem);*/
-                    Toast.makeText(activity, "DELETED", Toast.LENGTH_SHORT).show();
+                    removePost.setIfdeleted(deleteItem);
                 }
 
             });
-        }
-        else {
+        } else {
             //Lock drag on posts not owned by current user, preventing them from deleting them.
             swipeLayout.setLockDrag(true);
         }

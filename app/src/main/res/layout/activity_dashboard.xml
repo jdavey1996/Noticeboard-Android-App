@@ -1,22 +1,22 @@
-
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="#E5E5E5">
+    android:background="#E5E5E5"
+    android:fitsSystemWindows="true">
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#e95a44"
-        app:titleTextColor="@color/white"/>
+        android:layout_height="wrap_content"
+        android:background="#ffffff">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#e95a44"
+            app:titleTextColor="@color/white"/>
+
     </android.support.design.widget.AppBarLayout>
 
 
@@ -24,59 +24,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="4dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View your posts only"
-            android:id="@+id/postsViewSelect"
-            android:layout_marginLeft="10dp"
-            android:checked="false"
-            android:textColor="@color/colorPrimary"
-            />
-
-        <TextView
-            android:id="@+id/lastUpdatedTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="Last updated: "
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_below="@+id/postsViewSelect" />
-
-        <TextView
-            android:id="@+id/lastUpdated"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:layout_toEndOf="@+id/lastUpdatedTxt"
-            android:layout_alignTop="@+id/lastUpdatedTxt" />
 
         <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:id="@+id/swiperefresh"
-            android:layout_below="@+id/lastUpdatedTxt"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
 
 
             <ListView
+                android:id="@+id/postsView"
                 android:layout_width="wrap_content"
                 android:layout_height="428dp"
-                android:id="@+id/postsView"
-                android:background="#E5E5E5"
                 android:layout_alignParentStart="true"
-                android:paddingBottom="8dp"
+                android:background="#E5E5E5"
                 android:clipToPadding="false"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="8dp"/>
+                android:dividerHeight="8dp"
+                android:paddingBottom="8dp" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
@@ -87,17 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add_white_24dp"
-        android:onClick="addPostActivity" />
+        android:onClick="addPostActivity"
+        android:src="@drawable/ic_add_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>
-
-  <!--
-
-
-
-
-
-
-    </RelativeLayout>-->
-

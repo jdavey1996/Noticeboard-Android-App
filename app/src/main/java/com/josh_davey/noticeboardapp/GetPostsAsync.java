@@ -5,9 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -15,14 +12,12 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnObject> {
+public class GetPostsAsync extends AsyncTask<String,String,ArrayList<Posts> > {
     //Variables.
     Context context;
     Activity activity;
     ProgressDialog progressDialog;
-    String lastUpdated;
 
     public GetPostsAsync(Context context, Activity activity)
     {
@@ -61,8 +56,7 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
     }
 
     @Override
-    protected GetPostsAsync.ReturnObject doInBackground(String... params) {
-        String user = params[0];
+    protected ArrayList<Posts>  doInBackground(String... params) {
         try{
             publishProgress();
             Thread.sleep(2000);
@@ -75,20 +69,16 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
             //Get array of posts from response data.
             JSONArray posts = result.getJSONArray("data");
 
-            //Create object to return
-            GetPostsAsync.ReturnObject obj = new GetPostsAsync.ReturnObject();
-
+            ArrayList<Posts> data = new ArrayList<Posts>();
             //If posts array contains any data, add to arraylist in object to return.
             if (posts.length() > 0) {
                 for (int i = 0; i < posts.length(); i++) {
                     JSONObject tempJson = new JSONObject((posts.getString(i)));
                     Posts tempPost = new Posts(tempJson.get("post_num").toString(), tempJson.get("post_title").toString(), tempJson.get("post_desc").toString(), tempJson.get("post_user").toString());
-                    obj.data.add(tempPost);
+                    data.add(tempPost);
                 }
             }
-            //Set user variable to return then return object.
-            obj.user = user;
-            return obj;
+            return data;
 
         }catch (Exception e) {
             return null;
@@ -102,7 +92,7 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
     }
 
     @Override
-    protected void onPostExecute(GetPostsAsync.ReturnObject result) {
+    protected void onPostExecute(ArrayList<Posts>  result) {
         //Hide progress dialog.
         Progress.hideProgressDialog(progressDialog);
 
@@ -114,41 +104,7 @@ public class GetPostsAsync extends AsyncTask<String,String,GetPostsAsync.ReturnO
         else
         {
             //Runs the interface method to send the loaded list of posts to DashboardActivity.
-            postsListInterface.getListFromAsync(result.data);
-
-            //Get listview.
-            final ListView dashboardList = (ListView) activity.findViewById(R.id.postsView);
-
-            //If no posts were downloaded, set list to null, update timestamp and toast to user.
-            if(result.data.size()==0)
-            {
-                dashboardList.setAdapter(null);
-                updateRefreshTimestamp();
-                Toast.makeText(context,"No posts avilable.",Toast.LENGTH_SHORT).show();
-            }
-            //If posts were downloaded, run through filter and add to list. Then update timestamp.
-            else
-            {
-                //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
-                PostsFilter filter = new PostsFilter(context, activity,result.user);
-                final ListAdapter dashboardListAdapter = new PostsAdapter(activity, filter.filter(result.data),result.user);
-                dashboardList.setAdapter(dashboardListAdapter);
-                updateRefreshTimestamp();
-            }
+            postsListInterface.getListFromAsync(result);
         }
-    }
-
-    public void updateRefreshTimestamp()
-    {
-        //Stored current date and time in a string and display.
-        lastUpdated = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        TextView lastUpdatedText = (TextView) activity.findViewById(R.id.lastUpdated);
-        lastUpdatedText.setText(lastUpdated);
-    }
-
-    class ReturnObject
-    {
-        ArrayList<Posts> data = new ArrayList<Posts>();
-        String user;
     }
 }

@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,6 +31,9 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     String userId;
     GoogleApiClient googleApiClient;
     SwipeRefreshLayout srefresh;
+    private Menu menu;
+    ListView dashboardList;
+
 
     //Gets the context and activity.
     Context ctx = this;
@@ -61,6 +65,9 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
                 loadPosts(null);
             }
         });
+
+        //Get instance of listview.
+        dashboardList = (ListView) activity.findViewById(R.id.postsView);
     }
 
     @Override
@@ -74,27 +81,67 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     GetPostsAsync.PostsListInterface postsListListener = new GetPostsAsync.PostsListInterface() {
         @Override
         public void getListFromAsync(final ArrayList<Posts> listFromAsync) {
-            //Switch listener for viewing all posts or users posts. Upddates list accordingly once state changed.
-            Switch sw = (Switch) findViewById(R.id.postsViewSelect);
+
+            //Get switch instance.
+            Switch sw= (Switch)menu.findItem(R.id.action_clipboard_switch).getActionView().findViewById(R.id.postsFilterSwitch);
+
+            //If no posts were downloaded, set list to null and toast to user.
+            if(listFromAsync.size()==0)
+            {
+                dashboardList.setAdapter(null);
+                Toast.makeText(ctx,"No posts avilable.",Toast.LENGTH_SHORT).show();
+            }
+            //If posts were downloaded, check switch value.
+            else {
+                if (sw.isChecked()) {
+                    //Run through filter and display.
+                    displayList(true,listFromAsync);
+                }
+                else
+                {
+                    //Display full list
+                    displayList(false,listFromAsync);
+                }
+            }
+
+            //Switch listener for viewing all posts or users posts. Updates list accordingly once state changed.
             sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    //Runs the the list through the filter method which returns the filtered list and adds it to the adapter, linking it to the listview.
-                    PostsFilter filter = new PostsFilter(ctx, activity, userId);
-                    final ListAdapter dashboardListAdapter = new PostsAdapter(activity, filter.filter(listFromAsync), userId);
-                    final ListView dashboardList = (ListView) findViewById(R.id.postsView);
-                    dashboardList.setAdapter(dashboardListAdapter);
+                    //Filter list based on checked state.
+                    displayList(isChecked,listFromAsync);
                 }
             });
+
         }
     };
+
+    //Method to display correct list (filtered/unfiltered).
+    public void displayList(Boolean isChecked, ArrayList<Posts>list)
+    {
+        ListAdapter dashboardListAdapter;
+        if (isChecked)
+        {
+            //Run list through filter and add to adapter.
+            PostsFilter filter = new PostsFilter(userId);
+            dashboardListAdapter= new PostsAdapter(activity,filter.filter(list),userId);
+        }
+        else
+        {
+            //Add full list to adapter.
+            dashboardListAdapter = new PostsAdapter(activity,list,userId);
+        }
+
+        //Set adapter with either the full list or filtered list.
+        dashboardList.setAdapter(dashboardListAdapter);
+    }
+
 
     public void loadPosts(View view) {
         //Refreshes the list of posts and set the interface listener for the results returned from asynctask.
         GetPostsAsync refreshPostsBtn = new GetPostsAsync(this, this);
-        refreshPostsBtn.setOnResultListener(postsListListener);
         refreshPostsBtn.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,userId);
-
+        refreshPostsBtn.setOnResultListener(postsListListener);
         //Cancels swipe refresh when posts are loaded.
         srefresh.setRefreshing(false);
     }
@@ -158,6 +205,7 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu, menu);
+        this.menu = menu;
         return true;
     }
 

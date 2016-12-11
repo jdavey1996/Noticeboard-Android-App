@@ -6,6 +6,11 @@
     tools:context=".DashboardActivity">
 
     <item
+        android:id="@+id/action_clipboard_switch"
+        android:title=""
+        app:actionLayout="@layout/switch_layout"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/refreshBtn"
         android:title="Refresh"
         app:showAsAction="never" />
