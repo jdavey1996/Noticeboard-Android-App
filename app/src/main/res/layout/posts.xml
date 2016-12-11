@@ -1,46 +1,48 @@
 <!--https://github.com/chthai64/SwipeRevealLayout-->
 <com.chauthai.swipereveallayout.SwipeRevealLayout android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:mode="same_level"
     app:dragEdge="right"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swla">
 
-    <FrameLayout
-        android:id="@+id/deletePostBtn"
-       android:layout_width="wrap_content"
-       android:layout_height="match_parent"
-       android:background="#C0392B">
+        <RelativeLayout
+            android:id="@+id/deletePostBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="#C0392B">
        <ImageView
+           android:id="@+id/deleteImg"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:src="@drawable/ic_close_white_36dp"
            android:layout_gravity="center_vertical"
            android:layout_margin="16dp" />
-   </FrameLayout>
+   </RelativeLayout>
 
 
    <RelativeLayout
+       android:id="@+id/postlayout"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:background="#ffffff"
-      android:padding="8dp">
+      android:padding="10dp">
 
       <TextView
           android:id="@+id/postTitle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="#000000"
-          android:textSize="14sp"
+          android:textSize="18sp"
           android:textStyle="bold" />
 
       <TextView
           android:id="@+id/postDesc"
-          android:layout_width="fill_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="#333333"
-          android:textSize="12sp"
+          android:textSize="14sp"
           android:layout_below="@id/postTitle"
           />
 
@@ -52,6 +54,7 @@
           android:textSize="12sp"
           android:textColor="#e95a44"
           android:textStyle="bold"
+
           android:layout_below="@id/postDesc"/>
 
 
