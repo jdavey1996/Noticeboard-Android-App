@@ -179,7 +179,8 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
                 });
     }
 
-    private void revokeAccess() {
+    //Method to disallow the app further access to users Google Account. This will be called in order to delete your account. Once all your posts are deleted.
+    public void revokeAccess() {
         Auth.GoogleSignInApi.revokeAccess(googleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
@@ -198,7 +199,6 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
     public void onBackPressed() {
         logout();
     }
-
 
     //Inflate toolbar menu
     @Override
@@ -219,8 +219,10 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
             case R.id.logoutBtn:
                 logout();
                 break;
-            case R.id.disconnectBtn:
-                revokeAccess();
+            case R.id.deleteAccountBtn:
+                //Run asynctask to remove all posts associated with a users account. Once complete, run the revoke access method.
+                ClearAccountAsync clearAccountAsync = new ClearAccountAsync(this,this);
+                clearAccountAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,userId);
                 break;
         }
         return true;

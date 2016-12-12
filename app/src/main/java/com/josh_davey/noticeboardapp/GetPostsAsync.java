@@ -60,7 +60,7 @@ public class GetPostsAsync extends AsyncTask<String,String,ArrayList<Posts> > {
         try{
             publishProgress();
             Thread.sleep(2000);
-            URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_loadposts.php");
+            URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_load_posts.php");
 
             //Connect to url and get response data.
             Connection con = new Connection();

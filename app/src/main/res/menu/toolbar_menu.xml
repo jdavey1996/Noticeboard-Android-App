@@ -8,7 +8,7 @@
     <item
         android:id="@+id/action_clipboard_switch"
         android:title=""
-        app:actionLayout="@layout/switch_layout"
+        app:actionLayout="@layout/filter_switch"
         app:showAsAction="always"/>
     <item
         android:id="@+id/refreshBtn"
@@ -19,7 +19,7 @@
         android:title="Logout"
         app:showAsAction="never" />
     <item
-        android:id="@+id/disconnectBtn"
-        android:title="Disconnect"
+        android:id="@+id/deleteAccountBtn"
+        android:title="Delete account"
         app:showAsAction="never" />
 </menu>

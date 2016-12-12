@@ -52,7 +52,7 @@ public class AddPostsAsync extends AsyncTask<String,String,String> {
             publishProgress();
             Thread.sleep(2000);
 
-            URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_addpost.php");
+            URL url = new URL("http://josh-davey.com/noticeboard_app_data/noticeboard_app_add_post.php");
 
             //Create object containing data to post to url.
             JSONObject data = new JSONObject();
