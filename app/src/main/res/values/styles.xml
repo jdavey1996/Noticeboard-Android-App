@@ -29,4 +29,9 @@
         <item name="android:dropDownVerticalOffset">56dp</item>
     </style>
 
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#000000</item>
+        <item name="colorControlActivated">#e95a44</item>
+    </style>
+
 </resources>

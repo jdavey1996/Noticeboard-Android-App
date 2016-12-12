@@ -4,68 +4,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:background="@color/colorPrimary">
+    android:padding="5dp"
+    android:layout_margin="20dp"
+    android:background="#e5e5e5">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="5dp"
-        android:id="@+id/addpostlayout1">
+        android:id="@+id/addpostlayout1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
 
         <EditText
             android:id="@+id/postTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="#5d5d5d"
             android:hint="Post Title"
-            android:padding="5dp"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff"
-            android:textSize="14sp"/>
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:theme="@style/MyEditText"
+            android:textColorHint="#000000"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/postDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="#5d5d5d"
             android:hint="Post Description"
-            android:padding="5dp"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff"
-            android:textSize="14sp" />
+            android:theme="@style/MyEditText"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
+            android:textSize="16sp" />
 
         <LinearLayout android:id="@+id/addpostlayout2"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:layout_marginTop="5dp" >
-
-            <Button
+            android:layout_marginTop="5dp"
+            android:gravity="right">
+            <TextView
+                android:onClick="cancelNewPost"
                 android:id="@+id/cancelPostBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:onClick="cancelNewPost"
+                android:layout_height="wrap_content"
+                android:textColor="#e95a44"
                 android:text="Cancel"
-                android:textColor="#ffffff"
-                android:textSize="14sp"
-                android:background="#e95a44"
-                android:layout_marginEnd="2.5dp" />
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:layout_marginRight="18dp"/>
 
-            <Button
+            <TextView
                 android:id="@+id/addPostBtn"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:background="#e95a44"
+                android:layout_height="wrap_content"
+                android:textColor="#e95a44"
                 android:onClick="addNewPost"
                 android:text="Submit"
-                android:textColor="#ffffff"
-                android:textSize="14sp"
-                android:layout_marginStart="2.5dp" />
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_marginRight="8dp"/>
 
         </LinearLayout>
     </LinearLayout>
