@@ -1,6 +1,8 @@
 # Noticeboard-Android-App
 Noticeboard Android Application
 
-To-do list:
- - View by your posts only. Add a toggle switch to select between viewing all posts or just the users posts. Do this in the post adapter class and filter locally.
- - Update visuals of entire app
+My first android application. This allows users to create an account using google sign in and manage posts on a collaborative noticeboard. Users can create posts and delete their existing posts, as well as view posts by other users.
+
+This app utilises the following:
+ - Google sign in api
+ - Swipereveallayout library (https://github.com/chthai64/SwipeRevealLayout)
